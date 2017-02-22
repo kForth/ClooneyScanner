@@ -1,5 +1,0 @@
-.*
-scans/*
-*/__pycache__/*
-*.pyc
-*.psd

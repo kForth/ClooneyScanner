@@ -1,0 +1,9 @@
+.idea/
+.*
+scans/*
+*/__pycache__/*
+*.pyc
+*.psd
+env/
+scanner/__pycache__/
+scans/
