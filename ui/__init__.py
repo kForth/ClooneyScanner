@@ -2,14 +2,23 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+import cv2
+
+from scanner import scan_sheet
 
 
 class ScannerWindow(QMainWindow):
     def __init__(self):
-        super(ScannerWindow, self).__init__()
+        QMainWindow.__init__(self)
         uic.loadUi('qt/ScanView.ui', self)
 
-        self.scan_preview.setPixmap(QPixmap('scans/t5406_m60_p5.jpg'))
+        self.get_new_scan()
+
+        cvImage = cv2.imread('scans/Steamworks_rev2.png')
+        height, width, channels = cvImage.shape
+        cvImage = cv2.cvtColor(cvImage, cv2.COLOR_BGR2RGB)
+        mQImage = QImage(cvImage.data, width, height, width*3, QImage.Format_RGB888)
+        self.scan_preview.setPixmap(QPixmap.fromImage(mQImage))
         self.scan_preview.setScaledContents(True)
 
         self.data_preview.setRowCount(4)
@@ -38,3 +47,7 @@ class ScannerWindow(QMainWindow):
 
     def reject_scan(self):
         print("Reject")
+
+    def get_new_scan(self):
+        filename = "scans/Steamworks_rev2.png"
+        pass

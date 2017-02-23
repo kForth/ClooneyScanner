@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, uic
 
+
 class ScannerWindow(QtWidgets.QDialog):
     def __init__(self):
         super(ScannerWindow, self).__init__()

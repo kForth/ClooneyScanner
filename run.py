@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtGui
-from scanner import ScannerWindow
+from ui import ScannerWindow
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
