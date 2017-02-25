@@ -1,8 +1,9 @@
 .idea/
+env/
+images/
+scans/
+*/__pycache__/
 .*
-scans/*
-*/__pycache__
 *.pyc
 *.psd
-env/
-scans/
+__pycache__/
