@@ -39,14 +39,16 @@ class Scanner(object):
         self.marker_colour = sheet_config["marker_colour"]
         self.outline_colour = (0, 255, 0)  # RGB
 
-    def avg_value(self, img):
+    @staticmethod
+    def avg_value(img):
         s = 0
         for r in img:
             for c in r:
                 s += c.sum() / 3.0
         return s / (len(img) * len(img[0]))
 
-    def read_box(self, img, x, y, width, height, xy_factors):
+    @staticmethod
+    def read_box(img, x, y, width, height, xy_factors):
         x = int(x * xy_factors[0])
         y = int(y * xy_factors[1])
         width = int(width * xy_factors[0])
@@ -75,13 +77,13 @@ class Scanner(object):
 
         # show_sheet(scan_area)
         for field in self.scan_fields:
+            label = field["id"]
             field_type = field["type"]
             x_pos = field["x_pos"]
             y_pos = field["y_pos"]
             if field_type == "Markers":
                 pass
             elif field_type == "Digits":
-                label = field["id"]
                 width = self.config["seven_segment_width"]
                 thickness = self.config["seven_segment_thickness"]
                 spacing = self.config["seven_segment_offset"]
@@ -111,7 +113,6 @@ class Scanner(object):
                         nums += "_"
                 data[label] = nums
             elif field_type == "Barcode":
-                label = field["id"]
                 digits = len(bin(int("9" * field["options"]["digits"]))[2:])
                 x_pos -= box_size
                 number = ""
@@ -124,7 +125,6 @@ class Scanner(object):
                     data[label] = "____"
 
             elif field_type == "BoxNumber":
-                label = field["id"]
                 digits = field["options"]["digits"]
                 x_pos += self.config["label_offset"]
                 y_pos += y_spacing * 2
@@ -141,7 +141,6 @@ class Scanner(object):
                         number += "_"
                 data[label] = number
             elif field_type in ["HorizontalOptions", "Numbers", "Boolean"]:
-                label = field["id"]
                 options = field["options"]["options"]
                 note_width = 0 if not field["options"]["note_space"] else (1 + field["options"]["note_width"]) * (
                     box_size + box_spacing)
@@ -150,9 +149,8 @@ class Scanner(object):
 
                 values = []
                 for i in range(len(options)):
-                    name = options[i]
-                    box_val = self.read_box(scan_area, x_pos + i * (box_size + box_spacing), y_pos, box_size,
-                                            box_size, xy_factor)
+                    box_val = self.read_box(scan_area, x_pos + i * (box_size + box_spacing), y_pos, box_size, box_size,
+                                            xy_factor)
                     values.append(box_val)
 
                 if data_type == "Boolean":
@@ -171,14 +169,8 @@ class Scanner(object):
                         data[label] = list(reversed(options))[list(reversed(values)).index(True)]
                     else:
                         data[label] = None
-                        # for i in range(len(values)-1, 0, -1):
-                        #     if values[i]:
-                        #         data[label] = options[i]
-                        #         break
-                        # else:
-                        #     data[label] = ""
+
             elif field_type == "BulkOptions":
-                label = field["id"]
                 headers = field["options"]["headers"]
                 options = field["options"]["options"]
                 bulk_data = {}
@@ -196,7 +188,6 @@ class Scanner(object):
                     bulk_data[header] = values
                 data[label] = bulk_data
             elif field_type == "Image":
-                label = field["id"]
                 width = field["options"]["width"]
                 height = field["options"]["height"]
                 x_pos += 1 + self.config["marker_size"]
@@ -236,7 +227,6 @@ class Scanner(object):
         mask_range = get_colour_mask_range(*self.marker_colour, 10)
         mask = cv2.inRange(img_hsv, *mask_range)
         res = cv2.bitwise_and(img, img, mask=mask)
-        # show_sheet(res)
 
         edged = cv2.Canny(res, 100, 200)
         edged = cv2.blur(edged, (5, 5))
@@ -268,14 +258,13 @@ class Scanner(object):
 def get_colour_mask_range(*rgb, sensitivity=10):
     target_colour = np.uint8([[rgb]])
     target_hsv = cv2.cvtColor(target_colour, cv2.COLOR_RGB2HSV)[0][0]
-    print(target_hsv)
     lower_bound = np.array([0 if target_hsv[0] < sensitivity else target_hsv[0] - sensitivity, 150, 150])
     upper_bound = np.array([255 if target_hsv[0] > 255 - sensitivity else target_hsv[0] + sensitivity, 255, 255])
     return lower_bound, upper_bound
 
 
 def show_sheet(img):
-    cv2.imshow("", cv2.resize(img, (425, 550)))
+    cv2.imshow("Image", cv2.resize(img, (425, 550)))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -287,5 +276,4 @@ if __name__ == "__main__":
     raw_scan = cv2.imread('scans/scan.jpg')
     data, marked_sheet = scan.scan_sheet(raw_scan)
     from pprint import pprint
-
     pprint(data)
