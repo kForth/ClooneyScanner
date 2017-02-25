@@ -1,53 +1,115 @@
-from PyQt5 import uic
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-import cv2
+import json
+import glob
+import shutil
 
-from scanner import scan_sheet
+import cv2
+import numpy as np
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+from scan import Scanner
 
 
 class ScannerWindow(QMainWindow):
     def __init__(self):
+        # noinspection PyArgumentList
         QMainWindow.__init__(self)
         uic.loadUi('qt/ScanView.ui', self)
 
-        self.get_new_scan()
+        self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
 
-        cvImage = cv2.imread('scans/Steamworks_rev2.png')
-        height, width, channels = cvImage.shape
-        cvImage = cv2.cvtColor(cvImage, cv2.COLOR_BGR2RGB)
-        mQImage = QImage(cvImage.data, width, height, width*3, QImage.Format_RGB888)
-        self.scan_preview.setPixmap(QPixmap.fromImage(mQImage))
         self.scan_preview.setScaledContents(True)
-
-        self.data_preview.setRowCount(4)
-        self.data_preview.setColumnCount(2)
-
-        # set data
-        self.data_preview.setItem(0,0, QTableWidgetItem("Item (1,1)"))
-        self.data_preview.setItem(0,1, QTableWidgetItem("Item (1,2)"))
-        self.data_preview.setItem(1,0, QTableWidgetItem("Item (2,1)"))
-        self.data_preview.setItem(1,1, QTableWidgetItem("Item (2,2)"))
-        self.data_preview.setItem(2,0, QTableWidgetItem("Item (3,1)"))
-        self.data_preview.setItem(2,1, QTableWidgetItem("Item (3,2)"))
-        self.data_preview.setItem(3,0, QTableWidgetItem("Item (4,1)"))
-        self.data_preview.setItem(3,1, QTableWidgetItem("Item (4,2)"))
-
 
         self.submit_button.clicked.connect(self.submit_scan)
         self.reject_button.clicked.connect(self.reject_scan)
+        self.refresh_button.clicked.connect(self.look_for_scan)
+
+        self.config_file = "steamworks_config.json"
+        self.fields_file = "steamworks_fields.json"
+        self.scan_dir = "scans/"
+        self.data_file = "data.json"
+
+        fields = json.load(open(self.fields_file))  # TODO: Have a set up screen for these
+        config = json.load(open(self.config_file))
+        self.scanner = Scanner(fields, config, self.scan_dir + "img/")
+
+        self.filename = ""
+        self.img = None
+        self.data = {}
+
+        self.get_new_scan()
 
         # self.scan_preview
 
         self.show()
 
     def submit_scan(self):
-        print("Accept")
+        print("Accept")  # TODO: Actually do something with the data
+        if self.img is None:
+            return
+
+        shutil.move(self.scan_dir + self.filename, self.scan_dir + "processed/" + self.filename)
+        cv2.imwrite(self.scan_dir + "marked/" + self.filename, self.img)
+
+        self.get_new_scan()
 
     def reject_scan(self):
-        print("Reject")
+        print("Reject")  # TODO: Do something with the data and sheets
+        if self.img is None:
+            return
+
+        shutil.move(self.scan_dir + self.filename, self.scan_dir + "rejected/" + self.filename)
+        self.get_new_scan()
+
+    def set_img(self, cv_img):
+        height, width, channels = cv_img.shape
+        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        q_image = QImage(cv_img.data, width, height, width * 3, QImage.Format_RGB888)
+        # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
+        self.scan_preview.setPixmap(QPixmap.fromImage(q_image))
+
+    def set_data(self, data):
+        self.data_preview.setRowCount(len(data))
+
+        for r in range(len(data)):
+            key = list(data.keys())[r]
+            key_item = QTableWidgetItem(key)
+            key_item.setFlags(key_item.flags() & Qt.ItemIsEditable)
+            self.data_preview.setItem(r, 0, key_item)
+            self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
+
+    def look_for_scan(self):
+        self.get_new_scan()
+
+    def set_buttons_enabled(self, enabled):
+        self.submit_button.setEnabled(enabled)
+        self.reject_button.setEnabled(enabled)
+        self.refresh_button.setEnabled(enabled)
 
     def get_new_scan(self):
-        filename = "scans/Steamworks_rev2.png"
-        pass
+        self.set_buttons_enabled(False)
+
+        files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
+        try:
+            selected_file = files[0]
+            self.filename = selected_file.split("/")[-1]
+            raw_scan = cv2.imread(selected_file)
+        except Exception as ex:
+            print("Failed to read img")
+            self.filepath_label.setText(str(ex))
+            self.set_img(np.zeros((1, 1, 3), np.uint8))
+            self.set_data({})
+            self.refresh_button.setEnabled(True)
+            return
+
+        data, marked_sheet = self.scanner.scan_sheet(raw_scan)
+
+        self.img = marked_sheet
+        self.data = data
+        self.set_img(self.img)
+        self.set_data(self.data)
+        self.filepath_label.setText(files[0])
+
+        self.set_buttons_enabled(True)
