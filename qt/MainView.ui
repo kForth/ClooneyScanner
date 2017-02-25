@@ -39,6 +39,9 @@
       <height>13</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>File location for the sheet configuration.</string>
+    </property>
     <property name="text">
      <string>Config File:</string>
     </property>
@@ -116,6 +119,9 @@
       <height>13</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>File location for the field configurations.</string>
+    </property>
     <property name="text">
      <string>Fields File:</string>
     </property>
@@ -165,6 +171,9 @@
       <width>100</width>
       <height>13</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Folder to scan images from.</string>
     </property>
     <property name="text">
      <string>Scans Directory:</string>
@@ -282,8 +291,11 @@
       <height>13</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>File location to save the output data.</string>
+    </property>
     <property name="text">
-     <string>Data File:</string>
+     <string>Data Directory:</string>
     </property>
    </widget>
   </widget>

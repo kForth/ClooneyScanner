@@ -64,6 +64,9 @@
       <height>48</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Submit the scan and approve the data.</string>
+    </property>
     <property name="text">
      <string>Submit</string>
     </property>
@@ -85,6 +88,9 @@
       <width>200</width>
       <height>48</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Reject the scan and get a new one.</string>
     </property>
     <property name="text">
      <string>Reject</string>
