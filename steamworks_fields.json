@@ -1,0 +1,489 @@
+[
+  {
+    "type":    "Barcode",
+    "id":      "encoded_match_data",
+    "options": {
+      "label":  "-EncodedMatchData",
+      "digits": 4
+    },
+    "x_pos":   8.0,
+    "y_pos":   0.5,
+    "height":  0.18
+  },
+  {
+    "type":    "BoxNumber",
+    "id":      "team_number",
+    "options": {
+      "label":  "Team Number",
+      "digits": 4
+    },
+    "x_pos":   0.75,
+    "y_pos":   1.5,
+    "height":  1.3499999999999999
+  },
+  {
+    "type":    "Image",
+    "options": {
+      "label":     "Draw the Robot",
+      "width":     2,
+      "height":    1.5,
+      "offset":    2,
+      "y_offset":  2,
+      "prev_line": true
+    },
+    "id":      "robot_drawing",
+    "x_pos":   0.25,
+    "y_pos":   2.9749999999999996,
+    "height":  0
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Scored Low Boiler",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_scored_low",
+    "x_pos":   0.25,
+    "y_pos":   3.3509999999999995,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Reach Baseline",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_reached_baseline",
+    "x_pos":   1.9300000000000002,
+    "y_pos":   3.3509999999999995,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Trigger Hopper",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_triggered_hopper",
+    "x_pos":   3.6100000000000003,
+    "y_pos":   3.3509999999999995,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Scored High",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "auto_scored_high",
+    "x_pos":   0.25,
+    "y_pos":   3.6509999999999994,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Gears",
+      "options":    [
+        "1",
+        "2",
+        "3"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "auto_gears_scored",
+    "x_pos":   0.25,
+    "y_pos":   3.950999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Dropped Gear",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_dropped_gear",
+    "x_pos":   3.6100000000000003,
+    "y_pos":   3.950999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Scored High",
+      "options":    [
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_scored_high",
+    "x_pos":   0.25,
+    "y_pos":   4.627,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "High Boiler Attempts",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_high_attempts",
+    "x_pos":   0.25,
+    "y_pos":   4.927,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Low Boiler Attempts",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_low_attemps",
+    "x_pos":   0.25,
+    "y_pos":   5.226999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Balls From Floor",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "tele_balls_from_floor",
+    "x_pos":   0.25,
+    "y_pos":   5.526999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Balls From Hopper",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "tele_balls_from_hopper",
+    "x_pos":   1.9300000000000002,
+    "y_pos":   5.526999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Balls From Chute",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "tele_balls_from_chute",
+    "x_pos":   3.6100000000000003,
+    "y_pos":   5.526999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Placed Gears",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_gears_scored",
+    "x_pos":   0.25,
+    "y_pos":   6.202999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Dropped Gears",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_dropped_gears",
+    "x_pos":   0.25,
+    "y_pos":   6.502999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Gears from Floor",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_gears_from_floor",
+    "x_pos":   0.25,
+    "y_pos":   6.802999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Gears from Chute",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "tele_gears_from_chute",
+    "x_pos":   0.25,
+    "y_pos":   7.102999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Disabled",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "disabled",
+    "x_pos":   0.25,
+    "y_pos":   7.778999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Didn't Move",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "no_move",
+    "x_pos":   1.9300000000000002,
+    "y_pos":   7.778999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "No Show",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "no_show",
+    "x_pos":   3.6100000000000003,
+    "y_pos":   7.778999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "HorizontalOptions",
+    "options": {
+      "label":      "Climbed",
+      "options":    [
+        "S",
+        "F",
+        "NA"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "HorizontalOptions"
+    },
+    "id":      "tele_climbed",
+    "x_pos":   0.25,
+    "y_pos":   8.078999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "HorizontalOptions",
+    "options": {
+      "label":      "Defense",
+      "options":    [
+        "\ud83d\udca9",
+        "\ud83d\udc4e",
+        "\ud83d\udc4d",
+        "\ud83d\udd25"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "HorizontalOptions"
+    },
+    "id":      "tele_defense",
+    "x_pos":   3.6100000000000003,
+    "y_pos":   8.078999999999999,
+    "height":  0.3
+  },
+  {
+    "type":    "Image",
+    "options": {
+      "label":     "Notes",
+      "width":     5.625,
+      "height":    0.75,
+      "offset":    5.625,
+      "y_offset":  5.625,
+      "prev_line": false
+    },
+    "id":      "notes",
+    "x_pos":   0.25,
+    "y_pos":   8.379,
+    "height":  0.9299999999999999
+  }
+]
