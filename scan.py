@@ -217,7 +217,7 @@ class Scanner(object):
                     pt1 = (x_coords[0], y_coords[0])
                     pt2 = (x_coords[1], y_coords[1])
                     cv2.rectangle(scan_area, pt1, pt2, self.outline_colour, thickness=3)
-                data[label] = num_contours
+                data[label] = num_contours > 4
 
         data["match"] = data["encoded_match_data"][0:-1]
         data["pos"] = data["encoded_match_data"][-1]
