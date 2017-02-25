@@ -1,0 +1,23 @@
+{
+    "num_sheets":              1,
+    "filename":                "Steamworks",
+    "encode_scanner":          true,
+    "event":                   "Test 2017",
+    "spacer_page":             false,
+    "x_pos":                   0.25,
+    "y_spacing":               0.18,
+    "box_size":                0.18,
+    "box_spacing":             0.1,
+    "bool_x_offset":           6,
+    "font_size":               0.12,
+    "box_font_size":           0.1,
+    "marker_size":             0.5,
+    "divider_height":          0.016,
+    "team_x_offset":           5.6875,
+    "seven_segment_width":     0.25,
+    "seven_segment_thickness": 0.0625,
+    "seven_segment_offset":    0.5,
+    "marker_colour":           [255, 0, 0],
+    "font_color":              [100, 100, 100],
+    "label_offset":            1.25
+}
