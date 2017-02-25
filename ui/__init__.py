@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         self.settings.setValue("fields_filepath", fields_fp)
         self.settings.setValue("scans_dirpath", scans_dp)
 
-        ScanView(data_dp, config_fp, fields_fp, scans_dp)
+        self.scan_view = ScanView(data_dp, config_fp, fields_fp, scans_dp)
         self.hide()
 
     def select_data_dir(self):

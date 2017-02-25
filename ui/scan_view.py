@@ -26,7 +26,7 @@ class ScanView(QMainWindow):
         self.reject_button.clicked.connect(self.reject_scan)
         self.refresh_button.clicked.connect(self.look_for_scan)
 
-        self.data_file = data_dirpath + "data.json"
+        self.data_dir = data_dirpath + "data.json"
         self.config_file = config_filepath
         self.fields_file = fields_filepath
         self.scan_dir = scan_dirpath
@@ -41,7 +41,7 @@ class ScanView(QMainWindow):
 
         self.get_new_scan()
 
-        # self.show()
+        self.show()
 
     def submit_scan(self):
         print("Accept")  # TODO: Actually do something with the data
