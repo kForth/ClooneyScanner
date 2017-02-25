@@ -40,6 +40,11 @@ class Scanner(object):
         self.outline_colour = (0, 255, 0)  # RGB
 
     @staticmethod
+    def round_colours(img):
+        img = ((img / 255.0).round() * 255)
+        return img.astype(np.uint8)
+
+    @staticmethod
     def avg_value(img):
         s = 0
         for r in img:
@@ -222,9 +227,18 @@ class Scanner(object):
         return data, scan_area
 
     def crop_scan_area(self, img):
-        img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        img2 = img[:]
+        img2 = self.round_colours(img2)
 
-        mask_range = get_colour_mask_range(*self.marker_colour, 10)
+        hue_target = list(cv2.cvtColor(np.array([[self.marker_colour]]).astype(np.uint8), cv2.COLOR_RGB2HSV)[0, 0])
+        if hue_target[0] < 10 or hue_target[0] > 170:
+            img_hsv = cv2.cvtColor(img2, cv2.COLOR_RGB2HSV)  # Image is BGR, but we use RGB because red is dumb is HSV
+            target_colour = list(reversed(self.marker_colour))  # Reverse the RGB to BGR
+        else:
+            img_hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
+            target_colour = self.marker_colour
+
+        mask_range = get_colour_mask_range(*target_colour, 20)
         mask = cv2.inRange(img_hsv, *mask_range)
         res = cv2.bitwise_and(img, img, mask=mask)
 
