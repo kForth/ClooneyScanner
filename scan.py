@@ -3,8 +3,8 @@ import json
 import cv2
 import numpy as np
 
-SHEET_WIDTH = 8.5  # 8.375
-SHEET_HEIGHT = 11  # 10.875
+SHEET_WIDTH = 8.5
+SHEET_HEIGHT = 11
 
 DEBUG_SHOW_ALL_BOXES = False
 SENSITIVITY = 100
@@ -267,13 +267,3 @@ def show_sheet(img):
     cv2.imshow("Image", cv2.resize(img, (425, 550)))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    fields = json.load(open("steamworks_fields.json"))
-    config = json.load(open("steamworks_config.json"))
-    scan = Scanner(fields, config, "scans/img/")
-    raw_scan = cv2.imread('scans/scan.jpg')
-    data, marked_sheet = scan.scan_sheet(raw_scan)
-    from pprint import pprint
-    pprint(data)
