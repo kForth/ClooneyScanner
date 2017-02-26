@@ -172,7 +172,7 @@ class Scanner(object):
                     if True in values:
                         data[label] = list(reversed(options))[list(reversed(values)).index(True)]
                     else:
-                        data[label] = None
+                        data[label] = ""
 
             elif field_type == "BulkOptions":
                 headers = field["options"]["headers"]
