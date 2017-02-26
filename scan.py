@@ -80,7 +80,6 @@ class Scanner(object):
         y_spacing = self.config["y_spacing"]
         data = {}
 
-        # show_sheet(scan_area)
         for field in self.scan_fields:
             label = field["id"]
             field_type = field["type"]
@@ -159,7 +158,7 @@ class Scanner(object):
                     values.append(box_val)
 
                 if data_type == "Boolean":
-                    data[label] = values[0] * 1
+                    data[label] = 1 if values[0] else 0
                 elif data_type == "Numbers":
                     total = 0
                     for i in range(len(values)):
@@ -220,7 +219,11 @@ class Scanner(object):
                 data[label] = num_contours > 4
 
         data["match"] = data["encoded_match_data"][0:-1]
+        if data["match"] == "":
+            data["match"] = 0
         data["pos"] = data["encoded_match_data"][-1]
+        if data["pos"] == "":
+            data["pos"] = 0
 
         del data["encoded_match_data"]
 
@@ -281,3 +284,9 @@ def show_sheet(img):
     cv2.imshow("Image", cv2.resize(img, (425, 550)))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    import glob
+    scan = Scanner(json.load(open("steamworks_fields.json")), json.load(open("steamworks_config.json")), "images/")
+    files = glob.glob("scans/*.jpg")
+    scan.scan_sheet(cv2.imread(files[0]))
