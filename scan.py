@@ -121,7 +121,7 @@ class Scanner(object):
                 x_pos -= box_size
                 number = ""
                 for i in range(digits - 1):
-                    box_val = self.read_box(scan_area, x_pos - (i * box_size), y_pos, box_size, box_size, xy_factor)
+                    box_val = self.read_box(scan_area, x_pos - i * (box_size + box_spacing/4), y_pos, box_size, box_size, xy_factor)
                     number = ("1" if box_val else "0") + number
                 try:
                     data[label] = str(int(number, 2))
