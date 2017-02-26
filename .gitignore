@@ -2,8 +2,10 @@
 env/
 images/
 scans/
+data/
 */__pycache__/
 .*
 *.pyc
 *.psd
 __pycache__/
+data.json
