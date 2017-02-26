@@ -26,10 +26,14 @@ class ScanView(QMainWindow):
         self.reject_button.clicked.connect(self.reject_scan)
         self.refresh_button.clicked.connect(self.look_for_scan)
 
-        self.data_dir = data_dirpath + "data.json"
+        self.data_dir = data_dirpath
         self.config_file = config_filepath
         self.fields_file = fields_filepath
         self.scan_dir = scan_dirpath
+        self.check_files()
+
+        self.config = json.load(open(self.config_file))
+        self.data_filepath = data_dirpath + self.config["event"].lower().replace(" ", "_") + ".json"
 
         fields = json.load(open(self.fields_file))
         config = json.load(open(self.config_file))
@@ -42,6 +46,18 @@ class ScanView(QMainWindow):
         self.get_new_scan()
 
         self.show()
+
+    def check_files(self):
+        if not os.path.isfile(self.data_dir):
+            os.makedirs(os.path.dirname(self.data_dir), exist_ok=True)
+        if not os.path.isfile(self.config_file):
+            os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
+            json.dump({}, open(self.config_file, "w"))
+        if not os.path.isfile(self.fields_file):
+            os.makedirs(os.path.dirname(self.fields_file), exist_ok=True)
+            json.dump({}, open(self.fields_file, "w"))
+        if not os.path.isdir(self.scan_dir):
+            os.makedirs(os.path.dirname(self.scan_dir), exist_ok=True)
 
     def submit_scan(self):
         print("Accept")  # TODO: Actually do something with the data
