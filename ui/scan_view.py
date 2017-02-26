@@ -1,5 +1,6 @@
-import json
 import glob
+import json
+import os
 import shutil
 
 import cv2
@@ -41,7 +42,7 @@ class ScanView(QMainWindow):
 
         self.filename = ""
         self.img = None
-        self.data = {}
+        self.data_types = {}
 
         self.get_new_scan()
 
@@ -60,20 +61,30 @@ class ScanView(QMainWindow):
             os.makedirs(os.path.dirname(self.scan_dir), exist_ok=True)
 
     def submit_scan(self):
-        print("Accept")  # TODO: Actually do something with the data
         if self.img is None:
             return
+        edited_data = {}
+        for r in range(self.data_preview.model().rowCount()):
+            key = self.data_preview.model().index(r, 0).data()
+            value = self.data_preview.model().index(r, 1).data()
+            data_type = self.data_types[key]
+            data_type_name = data_type.__name__
+            edited_data[key] = eval(data_type_name + "('" + value + "')", {"__builtins__": {data_type_name: data_type}})
+
+        try:
+            data = json.load(open(self.data_filepath))
+        except:
+            data = []
+        data.append(edited_data)
+        json.dump(data, open(self.data_filepath, "w"))
 
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "marked/" + self.filename, self.img)
-
         self.get_new_scan()
 
     def reject_scan(self):
-        print("Reject")  # TODO: Do something with the data and sheets
         if self.img is None:
             return
-
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "rejected/" + self.filename)
         self.get_new_scan()
 
@@ -85,6 +96,7 @@ class ScanView(QMainWindow):
         self.scan_preview.setPixmap(QPixmap.fromImage(q_image))
 
     def set_data(self, data):
+        self.data_types = dict(zip(data.keys(), map(type, data.values())))
         self.data_preview.setRowCount(len(data))
 
         for r in range(len(data)):
@@ -121,9 +133,8 @@ class ScanView(QMainWindow):
         data, marked_sheet = self.scanner.scan_sheet(raw_scan)
 
         self.img = marked_sheet
-        self.data = data
         self.set_img(self.img)
-        self.set_data(self.data)
+        self.set_data(data)
         self.filepath_label.setText(files[0])
 
         self.set_buttons_enabled(True)
