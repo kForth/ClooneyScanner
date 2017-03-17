@@ -142,8 +142,8 @@ class Scanner(object):
                     if True in values:
                         number += str(max([a * b for a, b in zip(values, range(0, 10))]))
                     else:
-                        number += "_"
-                data[label] = number
+                        number += "0"
+                data[label] = int(number)
             elif field_type in ["HorizontalOptions", "Numbers", "Boolean"]:
                 options = field["options"]["options"]
                 note_width = 0 if not field["options"]["note_space"] else (1 + field["options"]["note_width"]) * (
