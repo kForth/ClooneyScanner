@@ -9,6 +9,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+import requests
 
 from scan import Scanner
 
@@ -70,13 +71,28 @@ class ScanView(QMainWindow):
             data_type = self.data_types[key]
             data_type_name = data_type.__name__
             edited_data[key] = eval(data_type_name + "('" + value + "')", {"__builtins__": {data_type_name: data_type}})
+            edited_data["filename"] = self.filename
 
         try:
             data = json.load(open(self.data_filepath))
         except:
             data = []
+
         data.append(edited_data)
         json.dump(data, open(self.data_filepath, "w"))
+
+        try:
+            data = {
+                'filename': self.filename,
+                'data': edited_data,
+                'team': edited_data["team_number"],
+                'match': edited_data["match"],
+                'pos': edited_data["pos"],
+                'event': "2017onto2"  # TODO: Get this from the settings page.
+            }
+            requests.post('http://0.0.0.0:5000/api/sql/add_entry', json=data)
+        except Exception as ex:
+            print(ex)
 
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "marked/" + self.filename, self.img)

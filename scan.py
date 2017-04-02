@@ -9,6 +9,7 @@ SHEET_HEIGHT = 11
 DEBUG_SHOW_ALL_BOXES = False
 SENSITIVITY = 100
 
+
 NUMBERS_MODEL = [[True, True, True, False, True, True, True],
                  [False, False, True, False, False, True, False],
                  [True, False, True, True, True, False, True],
