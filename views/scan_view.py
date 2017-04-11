@@ -1,7 +1,6 @@
 import glob
 import json
 import shutil
-from collections import OrderedDict
 
 import cv2
 import numpy as np
@@ -20,7 +19,7 @@ class ScanView(QMainWindow):
         QMainWindow.__init__(self)
         uic.loadUi('qt/ScanView.ui', self)
 
-        self.data_history = OrderedDict()
+        self.last_data = []
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
 
@@ -69,30 +68,32 @@ class ScanView(QMainWindow):
         data.append(edited_data)
         json.dump(data, self.data_file)
 
+        data = {
+            'filename': self.filename,
+            'data': edited_data,
+            'team': int(edited_data["team_number"]),
+            'match': int(edited_data["match"]),
+            'pos': int(edited_data["pos"]),
+            'event': self.event_id
+        }
+
         try:
-            data = {
-                'filename': self.filename,
-                'data': edited_data,
-                'team': int(edited_data["team_number"]),
-                'match': int(edited_data["match"]),
-                'pos': int(edited_data["pos"]),
-                'event': self.event_id
-            }
             if self.entry_id is None:
                 data['id'] = self.entry_id
             entry_id = requests.post('http://0.0.0.0:5000/api/sql/add_entry', json=data)
-            self.data_history[entry_id] = {'id': entry_id, 'data': data}
+            self.last_data.append({'id': entry_id, 'data': data})
         except Exception as ex:
+            self.last_data.append({'id': 0, 'data': data})
             print(ex)
 
-        shutil.move(self.scan_dir + self.filename, self.scan_dir + "processed/" + self.filename)
-        cv2.imwrite(self.scan_dir + "marked/" + self.filename, self.img)
+        shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
+        cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
         self.get_new_scan()
 
     def reject_scan(self):
         if self.img is None:
             return
-        shutil.move(self.scan_dir + self.filename, self.scan_dir + "rejected/" + self.filename)
+        shutil.move(self.scan_dir + self.filename, self.scan_dir + "Rejected/" + self.filename)
         self.get_new_scan()
 
     def set_img(self, cv_img):
@@ -127,17 +128,30 @@ class ScanView(QMainWindow):
         self.rotate_image_button.setEnabled(enabled)
 
     def load_last_sheet(self):
-        if len(self.data_history.keys()) > 0:
-            info = self.data_history[self.data_history.keys()[-1]]
+        if self.last_data:
+            info = self.last_data[-1]
+            self.last_data = self.last_data[:-1]
             self.entry_id = info['id']
+            self.filename = info['data']['filename']
+            shutil.move(self.scan_dir + "Processed/" + self.filename, self.scan_dir + self.filename)
             self.set_data(info['data']['data'])
-            self.set_img(cv2.imread(self.scan_dir + "processed/" + info['data']['filename']))
+            self.set_img(cv2.imread(self.scan_dir + "Marked/" + self.filename))
+            self.filepath_label.setText(self.filename)
+            self.set_buttons_enabled(True)
+
+            try:
+                data = json.load(self.data_file)
+            except:
+                data = []
+            data.append("Undo Last Submit")
+            json.dump(data, self.data_file)
 
     def get_new_scan(self):
         self.set_buttons_enabled(False)
         try:
             self.entry_id = None
             files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
+            print(files)
             selected_file = files[0]
             self.filename = selected_file.split("/")[-1]
             raw_scan = cv2.imread(selected_file)
