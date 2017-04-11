@@ -1,1 +1,431 @@
-[{"type": "Barcode", "id": "encoded_match_data", "options": {"label": "-EncodedMatchData", "digits": 4}, "x_pos": 8.0, "y_pos": 0.5, "height": 0.22}, {"type": "BoxNumber", "id": "team_number", "options": {"label": "Team Number", "digits": 4}, "x_pos": 0.75, "y_pos": 1.5, "height": 1.5}, {"type": "Image", "options": {"label": "Draw the Robot", "width": 2, "height": 1.5, "offset": 2, "y_offset": 2, "prev_line": true}, "id": "robot_drawing", "x_pos": 0.25, "y_pos": 3.125, "height": 0}, {"type": "Boolean", "options": {"label": "Reached Baseline", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "auto_reached_baseline", "x_pos": 0.25, "y_pos": 3.536, "height": 0.33}, {"type": "Boolean", "options": {"label": "Scored Low Boiler", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "auto_scored_low", "x_pos": 2.29, "y_pos": 3.536, "height": 0.33}, {"type": "Boolean", "options": {"label": "Triggered Hopper", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "auto_triggered_hopper", "x_pos": 4.33, "y_pos": 3.536, "height": 0.33}, {"type": "Numbers", "options": {"label": "Scored High", "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+10", "+10", "+10", "+10", "+10"], "offset": 0, "note_space": false, "note_width": 3, "type": "Numbers"}, "id": "auto_scored_high", "x_pos": 0.25, "y_pos": 3.866, "height": 0.33}, {"type": "Numbers", "options": {"label": "Gears", "options": ["1", "2", "3"], "offset": 0, "note_space": false, "note_width": 3, "type": "Numbers"}, "id": "auto_gears_scored", "x_pos": 0.25, "y_pos": 4.196, "height": 0.33}, {"type": "Boolean", "options": {"label": "Dropped Gear", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "auto_dropped_gear", "x_pos": 4.33, "y_pos": 4.196, "height": 0.33}, {"type": "Numbers", "options": {"label": "Placed Gears", "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+10"], "offset": 0, "note_space": true, "note_width": 3, "type": "Numbers"}, "id": "tele_gears_scored", "x_pos": 0.25, "y_pos": 4.936999999999999, "height": 0.33}, {"type": "Numbers", "options": {"label": "Dropped Gears", "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+10"], "offset": 0, "note_space": true, "note_width": 3, "type": "Numbers"}, "id": "tele_dropped_gears", "x_pos": 0.25, "y_pos": 5.2669999999999995, "height": 0.33}, {"type": "Numbers", "options": {"label": "Gears from Floor", "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+10"], "offset": 0, "note_space": true, "note_width": 3, "type": "Numbers"}, "id": "tele_gears_from_floor", "x_pos": 0.25, "y_pos": 5.5969999999999995, "height": 0.33}, {"type": "Numbers", "options": {"label": "Gears from Chute", "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+10"], "offset": 0, "note_space": true, "note_width": 3, "type": "Numbers"}, "id": "tele_gears_from_chute", "x_pos": 0.25, "y_pos": 5.927, "height": 0.33}, {"type": "HorizontalOptions", "options": {"label": "Scored High", "options": [["\ud83d\udca9", 0], ["\ud83d\udc4e", 1], ["\ud83d\udc4d", 2], ["\ud83d\udd25", 3]], "offset": 0, "note_space": false, "note_width": 3, "type": "HorizontalOptions"}, "id": "tele_scored_high", "x_pos": 0.25, "y_pos": 6.257, "height": 0.33}, {"type": "Boolean", "options": {"label": "Scored Low", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "tele_scored_low", "x_pos": 4.33, "y_pos": 6.257, "height": 0.33}, {"type": "Boolean", "options": {"label": "Stopped Moving", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "disabled", "x_pos": 0.25, "y_pos": 6.997999999999999, "height": 0.33}, {"type": "Boolean", "options": {"label": "Never Moved", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "no_move", "x_pos": 2.29, "y_pos": 6.997999999999999, "height": 0.33}, {"type": "Boolean", "options": {"label": "No Show", "options": ["_"], "offset": 0, "note_space": false, "note_width": 3, "type": "Boolean"}, "id": "no_show", "x_pos": 4.33, "y_pos": 6.997999999999999, "height": 0.33}, {"type": "HorizontalOptions", "options": {"label": "Climbed", "options": [["S", 1], ["F", 0]], "offset": 0, "note_space": false, "note_width": 3, "type": "HorizontalOptions"}, "id": "tele_climbed", "x_pos": 0.25, "y_pos": 7.327999999999999, "height": 0.33}, {"type": "HorizontalOptions", "options": {"label": "Defense", "options": [["\ud83d\udca9", 0], ["\ud83d\udc4e", 1], ["\ud83d\udc4d", 2], ["\ud83d\udd25", 3]], "offset": 0, "note_space": false, "note_width": 3, "type": "HorizontalOptions"}, "id": "tele_defense", "x_pos": 4.33, "y_pos": 7.327999999999999, "height": 0.33}, {"type": "Image", "options": {"label": "Notes", "width": 5.625, "height": 2.5, "offset": 5.625, "y_offset": 5.625, "prev_line": false}, "id": "notes", "x_pos": 0.25, "y_pos": 7.6579999999999995, "height": 2.7}]
+[
+  {
+    "type":    "Barcode",
+    "id":      "encoded_match_data",
+    "options": {
+      "label":  "-EncodedMatchData",
+      "digits": 4
+    },
+    "x_pos":   8.0,
+    "y_pos":   0.5,
+    "height":  0.22
+  },
+  {
+    "type":    "BoxNumber",
+    "id":      "team_number",
+    "options": {
+      "label":  "Team Number",
+      "digits": 4
+    },
+    "x_pos":   0.75,
+    "y_pos":   1.5,
+    "height":  1.5
+  },
+  {
+    "type":    "Image",
+    "options": {
+      "label":     "Draw the Robot",
+      "width":     2,
+      "height":    1.5,
+      "offset":    2,
+      "y_offset":  2,
+      "prev_line": true
+    },
+    "id":      "robot_drawing",
+    "x_pos":   0.25,
+    "y_pos":   3.125,
+    "height":  0
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Reached Baseline",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_reached_baseline",
+    "x_pos":   0.25,
+    "y_pos":   3.536,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Scored Low Boiler",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_scored_low",
+    "x_pos":   2.29,
+    "y_pos":   3.536,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Triggered Hopper",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_triggered_hopper",
+    "x_pos":   4.33,
+    "y_pos":   3.536,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Scored High",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10",
+        "+10",
+        "+10",
+        "+10",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "auto_scored_high",
+    "x_pos":   0.25,
+    "y_pos":   3.866,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Gears",
+      "options":    [
+        "1",
+        "2",
+        "3"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "auto_gears_scored",
+    "x_pos":   0.25,
+    "y_pos":   4.196,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Dropped Gear",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "auto_dropped_gear",
+    "x_pos":   4.33,
+    "y_pos":   4.196,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Placed Gears",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_gears_scored",
+    "x_pos":   0.25,
+    "y_pos":   4.936999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Dropped Gears",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_dropped_gears",
+    "x_pos":   0.25,
+    "y_pos":   5.2669999999999995,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Gears from Floor",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_gears_from_floor",
+    "x_pos":   0.25,
+    "y_pos":   5.5969999999999995,
+    "height":  0.33
+  },
+  {
+    "type":    "Numbers",
+    "options": {
+      "label":      "Gears from Chute",
+      "options":    [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+10"
+      ],
+      "offset":     0,
+      "note_space": true,
+      "note_width": 3,
+      "type":       "Numbers"
+    },
+    "id":      "tele_gears_from_chute",
+    "x_pos":   0.25,
+    "y_pos":   5.927,
+    "height":  0.33
+  },
+  {
+    "type":    "HorizontalOptions",
+    "options": {
+      "label":      "Scored High",
+      "options":    [
+        [
+          "\ud83d\udca9",
+          0
+        ],
+        [
+          "\ud83d\udc4e",
+          1
+        ],
+        [
+          "\ud83d\udc4d",
+          2
+        ],
+        [
+          "\ud83d\udd25",
+          3
+        ]
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "HorizontalOptions"
+    },
+    "id":      "tele_scored_high",
+    "x_pos":   0.25,
+    "y_pos":   6.257,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Scored Low",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "tele_scored_low",
+    "x_pos":   4.33,
+    "y_pos":   6.257,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Stopped Moving",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "disabled",
+    "x_pos":   0.25,
+    "y_pos":   6.997999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "Never Moved",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "no_move",
+    "x_pos":   2.29,
+    "y_pos":   6.997999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "Boolean",
+    "options": {
+      "label":      "No Show",
+      "options":    [
+        "_"
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "Boolean"
+    },
+    "id":      "no_show",
+    "x_pos":   4.33,
+    "y_pos":   6.997999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "HorizontalOptions",
+    "options": {
+      "label":      "Climbed",
+      "options":    [
+        [
+          "S",
+          1
+        ],
+        [
+          "F",
+          0
+        ]
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "HorizontalOptions"
+    },
+    "id":      "tele_climbed",
+    "x_pos":   0.25,
+    "y_pos":   7.327999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "HorizontalOptions",
+    "options": {
+      "label":      "Defense",
+      "options":    [
+        [
+          "\ud83d\udca9",
+          0
+        ],
+        [
+          "\ud83d\udc4e",
+          1
+        ],
+        [
+          "\ud83d\udc4d",
+          2
+        ],
+        [
+          "\ud83d\udd25",
+          3
+        ]
+      ],
+      "offset":     0,
+      "note_space": false,
+      "note_width": 3,
+      "type":       "HorizontalOptions"
+    },
+    "id":      "tele_defense",
+    "x_pos":   4.33,
+    "y_pos":   7.327999999999999,
+    "height":  0.33
+  },
+  {
+    "type":    "Image",
+    "options": {
+      "label":     "Notes",
+      "width":     5.625,
+      "height":    2.5,
+      "offset":    5.625,
+      "y_offset":  5.625,
+      "prev_line": false
+    },
+    "id":      "notes",
+    "x_pos":   0.25,
+    "y_pos":   7.6579999999999995,
+    "height":  2.7
+  }
+]
