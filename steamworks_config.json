@@ -1,8 +1,9 @@
 {
-    "num_sheets":              80,
+    "init_sheet_num":          1,
+    "num_sheets":              120,
     "filename":                "Steamworks",
     "encode_scanner":          true,
-    "event":                   "Georgian 2017",
+    "event":                   "District Champs 2017",
     "spacer_page":             true,
     "x_pos":                   0.25,
     "y_spacing":               0.2,
