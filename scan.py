@@ -172,7 +172,8 @@ class Scanner(object):
                     data[label] = total
                 else:
                     if True in values:
-                        data[label] = list(reversed(options))[list(reversed(values)).index(True)]
+                        val = list(reversed(options))[list(reversed(values)).index(True)]
+                        data[label] = val[0] if type(val) == list else val
                     else:
                         data[label] = ""
 
