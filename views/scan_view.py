@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import shutil
+from collections import OrderedDict
 
 import cv2
 import numpy as np
@@ -15,10 +16,12 @@ from scan import Scanner
 
 
 class ScanView(QMainWindow):
-    def __init__(self, data_dirpath, config_filepath, fields_filepath, scan_dirpath):
+    def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath):
         # noinspection PyArgumentList
         QMainWindow.__init__(self)
         uic.loadUi('qt/ScanView.ui', self)
+
+        self.data_history = OrderedDict()
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
 
@@ -26,40 +29,26 @@ class ScanView(QMainWindow):
 
         self.submit_button.clicked.connect(self.submit_scan)
         self.reject_button.clicked.connect(self.reject_scan)
+        self.go_back_button.clicked.connect(self.load_last_sheet)
+
         self.refresh_button.clicked.connect(self.look_for_scan)
 
-        self.data_dir = data_dirpath
-        self.config_file = config_filepath
-        self.fields_file = fields_filepath
+        self.event_id = event_id
+        self.data_file = data_file
+        self.config = config_file
+        self.fields_file = fields_file
         self.scan_dir = scan_dirpath
-        self.check_files()
 
-        self.config = json.load(open(self.config_file))
-        self.data_filepath = data_dirpath + self.config["event"].lower().replace(" ", "_") + ".json"
+        self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
 
-        fields = json.load(open(self.fields_file))
-        config = json.load(open(self.config_file))
-        self.scanner = Scanner(fields, config, self.data_dir + "images/")
-
-        self.filename = ""
+        self.entry_id = None
         self.img = None
+        self.filename = ""
         self.data_types = {}
 
         self.get_new_scan()
 
         self.show()
-
-    def check_files(self):
-        if not os.path.isfile(self.data_dir):
-            os.makedirs(os.path.dirname(self.data_dir), exist_ok=True)
-        if not os.path.isfile(self.config_file):
-            os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
-            json.dump({}, open(self.config_file, "w"))
-        if not os.path.isfile(self.fields_file):
-            os.makedirs(os.path.dirname(self.fields_file), exist_ok=True)
-            json.dump({}, open(self.fields_file, "w"))
-        if not os.path.isdir(self.scan_dir):
-            os.makedirs(os.path.dirname(self.scan_dir), exist_ok=True)
 
     def submit_scan(self):
         if self.img is None:
@@ -74,23 +63,26 @@ class ScanView(QMainWindow):
             edited_data["filename"] = self.filename
 
         try:
-            data = json.load(open(self.data_filepath))
+            data = json.load(self.data_file)
         except:
             data = []
 
         data.append(edited_data)
-        json.dump(data, open(self.data_filepath, "w"))
+        json.dump(data, open(self.data_file, "w+"))
 
         try:
             data = {
                 'filename': self.filename,
                 'data': edited_data,
-                'team': edited_data["team_number"],
-                'match': edited_data["match"],
-                'pos': edited_data["pos"],
-                'event': "2017onto2"  # TODO: Get this from the settings page.
+                'team': int(edited_data["team_number"]),
+                'match': int(edited_data["match"]),
+                'pos': int(edited_data["pos"]),
+                'event': self.event_id
             }
-            requests.post('http://0.0.0.0:5000/api/sql/add_entry', json=data)
+            if self.entry_id is None:
+                data['id'] = self.entry_id
+            entry_id = requests.post('http://0.0.0.0:5000/api/sql/add_entry', json=data)
+            self.data_history[entry_id] = {'id': entry_id, 'data': data}
         except Exception as ex:
             print(ex)
 
@@ -130,11 +122,18 @@ class ScanView(QMainWindow):
         self.reject_button.setEnabled(enabled)
         self.refresh_button.setEnabled(enabled)
 
+    def load_last_sheet(self):
+        if len(self.data_history.keys()) > 0:
+            info = self.data_history[self.data_history.keys()[-1]]
+            self.entry_id = info['id']
+            self.set_data(info['data']['data'])
+            self.set_img(cv2.imread(self.scan_dir + "processed/" + info['data']['filename']))
+
     def get_new_scan(self):
         self.set_buttons_enabled(False)
-
-        files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
         try:
+            self.entry_id = None
+            files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
             selected_file = files[0]
             self.filename = selected_file.split("/")[-1]
             raw_scan = cv2.imread(selected_file)

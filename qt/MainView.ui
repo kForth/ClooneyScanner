@@ -245,7 +245,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="data_dirpath">
+   <widget class="QLineEdit" name="data_filepath">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -255,7 +255,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="data_dirpath_button">
+   <widget class="QPushButton" name="data_filepath_button">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -296,6 +296,32 @@
     </property>
     <property name="text">
      <string>Data Directory:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="event_id_entry">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>10</y>
+      <width>230</width>
+      <height>30</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="event_id_label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>100</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>File location to save the output data.</string>
+    </property>
+    <property name="text">
+     <string>Event ID:</string>
     </property>
    </widget>
   </widget>
