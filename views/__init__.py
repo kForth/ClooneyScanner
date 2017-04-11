@@ -35,7 +35,6 @@ class MainWindow(QMainWindow):
         files = self.load_files()
         if not files:
             return
-        print(files)
         self.settings.setValue("event_id", self.event_id_entry.text())
         self.settings.setValue("data_filepath", self.data_filepath.text())
         self.settings.setValue("config_filepath", self.config_filepath.text())

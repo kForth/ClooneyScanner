@@ -1,6 +1,5 @@
 import glob
 import json
-import os
 import shutil
 from collections import OrderedDict
 
@@ -68,7 +67,7 @@ class ScanView(QMainWindow):
             data = []
 
         data.append(edited_data)
-        json.dump(data, open(self.data_file, "w+"))
+        json.dump(data, self.data_file)
 
         try:
             data = {
@@ -115,12 +114,17 @@ class ScanView(QMainWindow):
             self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
 
     def look_for_scan(self):
+        self.set_buttons_enabled(False)
+        self.update()
         self.get_new_scan()
+        self.set_buttons_enabled(True)
 
     def set_buttons_enabled(self, enabled):
         self.submit_button.setEnabled(enabled)
         self.reject_button.setEnabled(enabled)
         self.refresh_button.setEnabled(enabled)
+        self.select_corners_button.setEnabled(enabled)
+        self.rotate_image_button.setEnabled(enabled)
 
     def load_last_sheet(self):
         if len(self.data_history.keys()) > 0:
