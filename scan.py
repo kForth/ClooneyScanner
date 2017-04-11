@@ -59,11 +59,12 @@ class Scanner(object):
         y = int(y * xy_factors[1])
         width = int(width * xy_factors[0])
         height = int(height * xy_factors[1])
-        s = 0
         img2 = img[y:y + height, x:x + width]
-        for r in img2:
-            for c in r:
-                s += c.sum() / 3.0
+        s = np.sum(np.sum(np.sum(img2))) / 3.0
+
+        # for r in img2:
+        #     for c in r:
+        #         s += c.sum() / 3.0
 
         if (s / (width * height)) < SENSITIVITY or DEBUG_SHOW_ALL_BOXES:
             cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 0), thickness=3)
