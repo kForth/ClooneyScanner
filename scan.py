@@ -9,7 +9,6 @@ SHEET_HEIGHT = 11
 DEBUG_SHOW_ALL_BOXES = False
 SENSITIVITY = 50
 
-
 NUMBERS_MODEL = [[True, True, True, False, True, True, True],
                  [False, False, True, False, False, True, False],
                  [True, False, True, True, True, False, True],
@@ -45,14 +44,6 @@ class Scanner(object):
     def round_colours(img):
         img = ((img / 255.0).round() * 255)
         return img.astype(np.uint8)
-
-    @staticmethod
-    def avg_value(img):
-        s = 0
-        for r in img:
-            for c in r:
-                s += c.sum() / 3.0
-        return s / (len(img) * len(img[0]))
 
     def read_box(self, src, dst, x, y, width, height):
         x = int(x * self.xy_factors[0])
