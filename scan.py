@@ -7,7 +7,7 @@ SHEET_WIDTH = 8.5
 SHEET_HEIGHT = 11
 
 DEBUG_SHOW_ALL_BOXES = False
-SENSITIVITY = 100
+SENSITIVITY = 50
 
 
 NUMBERS_MODEL = [[True, True, True, False, True, True, True],
@@ -39,6 +39,7 @@ class Scanner(object):
         self.img_dir = img_dir
         self.marker_colour = sheet_config["marker_colour"]
         self.outline_colour = (0, 255, 0)  # RGB
+        self.xy_factor = (1, 1)
 
     @staticmethod
     def round_colours(img):
@@ -53,34 +54,33 @@ class Scanner(object):
                 s += c.sum() / 3.0
         return s / (len(img) * len(img[0]))
 
-    @staticmethod
-    def read_box(img, x, y, width, height, xy_factors):
-        x = int(x * xy_factors[0])
-        y = int(y * xy_factors[1])
-        width = int(width * xy_factors[0])
-        height = int(height * xy_factors[1])
-        img2 = img[y:y + height, x:x + width]
-        s = np.sum(np.sum(np.sum(img2))) / 3.0
+    def read_box(self, src, dst, x, y, width, height):
+        x = int(x * self.xy_factors[0])
+        y = int(y * self.xy_factors[1])
+        width = int(width * self.xy_factors[0])
+        height = int(height * self.xy_factors[1])
+        img2 = src[y:y + height, x:x + width]
 
-        # for r in img2:
-        #     for c in r:
-        #         s += c.sum() / 3.0
+        avg = np.sum(np.sum(np.sum(img2))) / (height * width * 3)
 
-        if (s / (width * height)) < SENSITIVITY or DEBUG_SHOW_ALL_BOXES:
-            cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 0), thickness=3)
+        if avg < SENSITIVITY or DEBUG_SHOW_ALL_BOXES:
+            cv2.rectangle(dst, (x, y), (x + width, y + height), (0, 255, 0), thickness=3)
         else:
-            cv2.rectangle(img, (x, y), (x + width, y + height), (200, 200, 200), thickness=3)
+            cv2.rectangle(dst, (x, y), (x + width, y + height), (200, 200, 200), thickness=3)
 
-        return (s / (width * height)) < SENSITIVITY
+        return avg < SENSITIVITY
 
     def scan_sheet(self, image):
         scan_area = self.crop_scan_area(image)
         img_height, img_width, img_channels = scan_area.shape
-        xy_factor = (img_width / SHEET_WIDTH, img_height / SHEET_HEIGHT)
+        self.xy_factors = (img_width / SHEET_WIDTH, img_height / SHEET_HEIGHT)
         box_size = self.config["box_size"]
         box_spacing = self.config["box_spacing"]
         y_spacing = self.config["y_spacing"]
         data = {}
+
+        img2 = cv2.cvtColor(scan_area, cv2.COLOR_RGB2GRAY)
+        thresh, img2 = cv2.threshold(img2, 100, 255, cv2.THRESH_BINARY)
 
         for field in self.scan_fields:
             label = field["id"]
@@ -96,18 +96,18 @@ class Scanner(object):
                 nums = ""
                 for i in range(4):
                     parts = [
-                        self.read_box(scan_area, x_pos + thickness + spacing * i, y_pos, width, thickness, xy_factor),
-                        self.read_box(scan_area, x_pos + spacing * i, y_pos + thickness, thickness, width, xy_factor),
-                        self.read_box(scan_area, x_pos + spacing * i + thickness + width, y_pos + thickness, thickness,
-                                      width, xy_factor),
-                        self.read_box(scan_area, x_pos + thickness + spacing * i, y_pos + width + thickness, width,
-                                      thickness, xy_factor),
-                        self.read_box(scan_area, x_pos + spacing * i, y_pos + width + thickness + thickness, thickness,
-                                      width, xy_factor),
-                        self.read_box(scan_area, x_pos + spacing * i + thickness + width,
-                                      y_pos + width + thickness + thickness, thickness, width, xy_factor),
-                        self.read_box(scan_area, x_pos + thickness + spacing * i, y_pos + (width + thickness) * 2,
-                                      width, thickness, xy_factor)]
+                        self.read_box(img2, scan_area, x_pos + thickness + spacing * i, y_pos, width, thickness),
+                        self.read_box(img2, scan_area, x_pos + spacing * i, y_pos + thickness, thickness, width),
+                        self.read_box(img2, scan_area, x_pos + spacing * i + thickness + width, y_pos + thickness, thickness,
+                                      width),
+                        self.read_box(img2, scan_area, x_pos + thickness + spacing * i, y_pos + width + thickness, width,
+                                      thickness),
+                        self.read_box(img2, scan_area, x_pos + spacing * i, y_pos + width + thickness + thickness, thickness,
+                                      width),
+                        self.read_box(img2, scan_area, x_pos + spacing * i + thickness + width,
+                                      y_pos + width + thickness + thickness, thickness, width),
+                        self.read_box(img2, scan_area, x_pos + thickness + spacing * i, y_pos + (width + thickness) * 2,
+                                      width, thickness)]
                     for j in range(10):
                         if NUMBERS_MODEL[j] == parts:
                             nums += str(j)
@@ -123,7 +123,7 @@ class Scanner(object):
                 x_pos -= box_size
                 number = ""
                 for i in range(digits - 1):
-                    box_val = self.read_box(scan_area, x_pos - i * (box_size + box_spacing/4), y_pos, box_size, box_size, xy_factor)
+                    box_val = self.read_box(img2, scan_area, x_pos - i * (box_size + box_spacing/4), y_pos, box_size, box_size)
                     number = ("1" if box_val else "0") + number
                 try:
                     data[label] = str(int(number, 2))
@@ -138,8 +138,8 @@ class Scanner(object):
                 for i in range(digits):
                     values = []
                     for j in range(10):
-                        box_val = self.read_box(scan_area, x_pos + j * (box_size + box_spacing),
-                                                y_pos + (y_spacing * 1.5 * i), box_size, box_size, xy_factor)
+                        box_val = self.read_box(img2, scan_area, x_pos + j * (box_size + box_spacing),
+                                                y_pos + (y_spacing * 1.5 * i), box_size, box_size)
                         values.append(box_val)
                     if True in values:
                         number += str(max([a * b for a, b in zip(values, range(0, 10))]))
@@ -155,8 +155,7 @@ class Scanner(object):
 
                 values = []
                 for i in range(len(options)):
-                    box_val = self.read_box(scan_area, x_pos + i * (box_size + box_spacing), y_pos, box_size, box_size,
-                                            xy_factor)
+                    box_val = self.read_box(img2, scan_area, x_pos + i * (box_size + box_spacing), y_pos, box_size, box_size)
                     values.append(box_val)
 
                 if data_type == "Boolean":
@@ -187,8 +186,8 @@ class Scanner(object):
                     values = []
                     for j in range(len(options)):
                         bool_values.append(
-                                self.read_box(scan_area, x_pos + i * (box_size + box_spacing),
-                                              y_pos + j * (box_size + box_spacing), box_size, box_size, xy_factor))
+                                self.read_box(img2, scan_area, x_pos + i * (box_size + box_spacing),
+                                              y_pos + j * (box_size + box_spacing), box_size, box_size))
                     for k in range(len(bool_values)):
                         if bool_values[k]:
                             values.append(options[k])
@@ -203,8 +202,8 @@ class Scanner(object):
                     y_pos -= field["options"]["y_offset"] - self.config["marker_size"]
                 else:
                     pass
-                x_coords = (int(x_pos * xy_factor[0]), int((x_pos + width) * xy_factor[0]))
-                y_coords = (int(y_pos * xy_factor[1]), int((y_pos + height) * xy_factor[1]))
+                x_coords = (int(x_pos * self.xy_factor[0]), int((x_pos + width) * self.xy_factor[0]))
+                y_coords = (int(y_pos * self.xy_factor[1]), int((y_pos + height) * self.xy_factor[1]))
                 crop = scan_area[y_coords[0]:y_coords[1], x_coords[0]:x_coords[1]]
 
                 edged = cv2.Canny(crop, 100, 200)
@@ -244,7 +243,7 @@ class Scanner(object):
             img_hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
             target_colour = self.marker_colour
 
-        mask_range = get_colour_mask_range(*target_colour, 20)
+        mask_range = get_colour_mask_range(*target_colour, 50)
         mask = cv2.inRange(img_hsv, *mask_range)
         res = cv2.bitwise_and(img, img, mask=mask)
 
@@ -252,22 +251,17 @@ class Scanner(object):
         edged = cv2.blur(edged, (5, 5))
 
         (_, contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
-
-        boxes = []
-
-        for c in contours:
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-            if len(approx) == 4:
-                boxes += [approx]
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:2]
+        cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
 
         x_coords = []
         y_coords = []
-        for box in boxes:
-            for point in box:
-                x_coords.append(point[0][0])
-                y_coords.append(point[0][1])
+
+        for cnt in contours:
+            for e in cnt:
+                for d in e:
+                    x_coords.append(d[0])
+                    y_coords.append(d[1])
 
         upper_left_corner = (min(x_coords), min(y_coords))
         lower_right_corner = (int(max(x_coords)), max(y_coords))
