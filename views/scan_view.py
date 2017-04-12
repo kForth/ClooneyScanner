@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import *
 import requests
 
 from scan import Scanner
+from views.edit_view import EditView
 
 
 class ScanView(QMainWindow):
@@ -30,6 +31,7 @@ class ScanView(QMainWindow):
         self.go_back_button.clicked.connect(self.load_last_sheet)
 
         self.refresh_button.clicked.connect(self.look_for_scan)
+        self.fix_sheet_button.clicked.connect(self.select_corners_window)
 
         self.event_id = event_id
         self.data_file = data_file
@@ -47,6 +49,10 @@ class ScanView(QMainWindow):
         self.get_new_scan()
 
         self.show()
+
+    def select_corners_window(self):
+        self.edit_view = EditView(self.scan_dir, self.filename, lambda: self.look_for_scan())
+        pass
 
     def submit_scan(self):
         if self.img is None:
@@ -124,8 +130,7 @@ class ScanView(QMainWindow):
         self.submit_button.setEnabled(enabled)
         self.reject_button.setEnabled(enabled)
         self.refresh_button.setEnabled(enabled)
-        self.select_corners_button.setEnabled(enabled)
-        self.rotate_image_button.setEnabled(enabled)
+        self.fix_sheet_button.setEnabled(enabled)
 
     def load_last_sheet(self):
         if self.last_data:
