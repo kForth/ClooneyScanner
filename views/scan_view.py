@@ -15,11 +15,12 @@ from views.edit_view import EditView
 
 
 class ScanView(QMainWindow):
-    def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath):
+    def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath, clooney_host):
         # noinspection PyArgumentList
         QMainWindow.__init__(self)
         uic.loadUi('qt/ScanView.ui', self)
 
+        self.clooney_host = clooney_host
         self.last_data = []
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
@@ -86,7 +87,7 @@ class ScanView(QMainWindow):
         try:
             if self.entry_id is None:
                 data['id'] = self.entry_id
-            entry_id = requests.post('http://0.0.0.0:5000/api/sql/add_entry', json=data)
+            entry_id = requests.post('http://' + self.clooney_host + '/api/sql/add_entry', json=data)
             self.last_data.append({'id': entry_id, 'data': data})
         except Exception as ex:
             self.last_data.append({'id': 0, 'data': data})

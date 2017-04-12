@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>380</width>
-    <height>250</height>
+    <height>285</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>90</y>
+      <y>125</y>
       <width>200</width>
       <height>30</height>
      </rect>
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>100</y>
+      <y>135</y>
       <width>100</width>
       <height>13</height>
      </rect>
@@ -50,7 +50,7 @@
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>90</y>
+      <y>125</y>
       <width>30</width>
       <height>30</height>
      </rect>
@@ -77,7 +77,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>130</y>
+      <y>165</y>
       <width>200</width>
       <height>30</height>
      </rect>
@@ -87,7 +87,7 @@
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>130</y>
+      <y>165</y>
       <width>30</width>
       <height>30</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>140</y>
+      <y>175</y>
       <width>100</width>
       <height>13</height>
      </rect>
@@ -130,7 +130,7 @@
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>170</y>
+      <y>205</y>
       <width>30</width>
       <height>30</height>
      </rect>
@@ -157,7 +157,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>170</y>
+      <y>205</y>
       <width>200</width>
       <height>30</height>
      </rect>
@@ -167,7 +167,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>180</y>
+      <y>215</y>
       <width>100</width>
       <height>13</height>
      </rect>
@@ -183,7 +183,7 @@
     <property name="geometry">
      <rect>
       <x>216</x>
-      <y>205</y>
+      <y>240</y>
       <width>150</width>
       <height>40</height>
      </rect>
@@ -216,7 +216,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>205</y>
+      <y>240</y>
       <width>150</width>
       <height>40</height>
      </rect>
@@ -249,7 +249,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>50</y>
+      <y>85</y>
       <width>200</width>
       <height>30</height>
      </rect>
@@ -259,7 +259,7 @@
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>50</y>
+      <y>85</y>
       <width>30</width>
       <height>30</height>
      </rect>
@@ -282,11 +282,11 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="data_dirpath_label">
+   <widget class="QLabel" name="data_filepath_label">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>95</y>
       <width>100</width>
       <height>13</height>
      </rect>
@@ -295,7 +295,7 @@
      <string>File location to save the output data.</string>
     </property>
     <property name="text">
-     <string>Data Directory:</string>
+     <string>Data File:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="event_id_entry">
@@ -322,6 +322,32 @@
     </property>
     <property name="text">
      <string>Event ID:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="clooney_hostname_entry">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>47</y>
+      <width>230</width>
+      <height>30</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="clooney_hostname_label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>57</y>
+      <width>100</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>File location to save the output data.</string>
+    </property>
+    <property name="text">
+     <string>Clooney Host:</string>
     </property>
    </widget>
   </widget>

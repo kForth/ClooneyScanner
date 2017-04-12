@@ -16,6 +16,7 @@ class MainWindow(QMainWindow):
         self.settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "KestinGoforth", "ClooneyScanner")
 
         self.event_id_entry.setText(self.settings.value("event_id"))
+        self.clooney_hostname_entry.setText(self.settings.value("clooney_host"))
         self.data_filepath.setText(self.settings.value("data_filepath"))
         self.config_filepath.setText(self.settings.value("config_filepath"))
         self.fields_filepath.setText(self.settings.value("fields_filepath"))
@@ -36,12 +37,24 @@ class MainWindow(QMainWindow):
         if not files:
             return
         self.settings.setValue("event_id", self.event_id_entry.text())
+        self.settings.setValue("clooney_host", self.clooney_hostname_entry.text())
         self.settings.setValue("data_filepath", self.data_filepath.text())
         self.settings.setValue("config_filepath", self.config_filepath.text())
         self.settings.setValue("fields_filepath", self.fields_filepath.text())
         self.settings.setValue("scans_dirpath", self.scans_dirpath.text())
 
-        self.scan_view = ScanView(self.event_id_entry.text(), files[0], files[1], files[2], self.scans_dirpath.text())
+        event_id = self.event_id_entry.text()
+        host = self.clooney_hostname_entry.text()
+        if host.startswith('https://'):
+            host = host[8:]
+        if host.startswith('http://'):
+            host = host[7:]
+        if host.startswith('www.'):
+            host = host[4:]
+        if host.endswith('/'):
+            host = host[:-1]
+
+        self.scan_view = ScanView(event_id, files[0], files[1], files[2], self.scans_dirpath.text(), host)
         self.hide()
 
     def select_data_dir(self):
