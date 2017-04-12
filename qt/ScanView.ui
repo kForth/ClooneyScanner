@@ -148,9 +148,9 @@
    <widget class="QPushButton" name="refresh_button">
     <property name="geometry">
      <rect>
-      <x>15</x>
+      <x>14</x>
       <y>5</y>
-      <width>120</width>
+      <width>100</width>
       <height>40</height>
      </rect>
     </property>
@@ -179,45 +179,17 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="select_corners_button">
+   <widget class="QPushButton" name="fix_sheet_button">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>105</x>
       <y>5</y>
-      <width>120</width>
+      <width>115</width>
       <height>40</height>
      </rect>
     </property>
     <property name="text">
-     <string notr="true">Select Corners</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>30</width>
-      <height>30</height>
-     </size>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="rotate_image_button">
-    <property name="geometry">
-     <rect>
-      <x>245</x>
-      <y>5</y>
-      <width>120</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string notr="true">Rotate Image</string>
+     <string notr="true">Fix Sheet</string>
     </property>
     <property name="iconSize">
      <size>
