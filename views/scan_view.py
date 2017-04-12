@@ -40,6 +40,8 @@ class ScanView(QMainWindow):
         self.fields_file = fields_file
         self.scan_dir = scan_dirpath
 
+        self.fields = dict(zip(map(lambda x: x['id'], self.fields_file), self.fields_file))
+
         self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
 
         self.entry_id = None
@@ -59,8 +61,7 @@ class ScanView(QMainWindow):
         self.fix_sheet_button.setEnabled('fix_sheet' in enabled)
 
     def select_corners_window(self):
-        self.edit_view = EditView(self.scan_dir, self.filename, lambda: self.look_for_scan())
-        pass
+        EditView(self.scan_dir, self.filename, lambda: self.look_for_scan())
 
     def submit_scan(self):
         if self.img is None:
@@ -69,7 +70,10 @@ class ScanView(QMainWindow):
         self.enable_buttons([])
         for r in range(self.data_preview.model().rowCount()):
             key = self.data_preview.model().index(r, 0).data()
-            value = self.data_preview.model().index(r, 1).data()
+            if key in self.fields.keys() and self.fields[key]['type'] in ['HorizontalOptions', 'Boolean']:
+                value = self.data_preview.cellWidget(r, 1).currentText()
+            else:
+                value = self.data_preview.model().index(r, 1).data()
             data_type = self.data_types[key]
             data_type_name = data_type.__name__
             edited_data[key] = eval(data_type_name + "('" + value + "')", {"__builtins__": {data_type_name: data_type}})
@@ -128,7 +132,20 @@ class ScanView(QMainWindow):
             key_item = QTableWidgetItem(key)
             key_item.setFlags(key_item.flags() & Qt.ItemIsEditable)
             self.data_preview.setItem(r, 0, key_item)
-            self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
+            if key in self.fields.keys() and self.fields[key]['type'] == 'HorizontalOptions':
+                c = QComboBox()
+                options = list(map(lambda x: x[0], self.fields[key]['options']['options'])) + ['']
+                c.addItems(options)
+                c.setCurrentIndex(options.index(data[key]))
+                self.data_preview.setCellWidget(r, 1, c)
+            elif key in self.fields.keys() and self.fields[key]['type'] == 'Boolean':
+                c = QComboBox()
+                options = [1, 0]
+                c.addItems(map(str, options))
+                c.setCurrentIndex(options.index(data[key]))
+                self.data_preview.setCellWidget(r, 1, c)
+            else:
+                self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
 
     def look_for_scan(self):
         self.set_buttons_enabled(False)
@@ -166,7 +183,6 @@ class ScanView(QMainWindow):
         try:
             self.entry_id = None
             files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
-            print(files)
             selected_file = files[0]
             self.filename = selected_file.split("/")[-1]
             raw_scan = cv2.imread(selected_file)
