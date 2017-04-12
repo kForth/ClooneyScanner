@@ -51,6 +51,13 @@ class ScanView(QMainWindow):
 
         self.show()
 
+    def enable_buttons(self, enabled=('submit', 'reject', 'go_back', 'refresh', 'fix')):
+        self.submit_button.setEnabled('submit' in enabled)
+        self.reject_button.setEnabled('reject' in enabled)
+        self.go_back_button.setEnabled('go_back' in enabled)
+        self.refresh_button.setEnabled('refresh' in enabled)
+        self.fix_sheet_button.setEnabled('fix_sheet' in enabled)
+
     def select_corners_window(self):
         self.edit_view = EditView(self.scan_dir, self.filename, lambda: self.look_for_scan())
         pass
@@ -59,6 +66,7 @@ class ScanView(QMainWindow):
         if self.img is None:
             return
         edited_data = {}
+        self.enable_buttons([])
         for r in range(self.data_preview.model().rowCount()):
             key = self.data_preview.model().index(r, 0).data()
             value = self.data_preview.model().index(r, 1).data()
@@ -96,6 +104,7 @@ class ScanView(QMainWindow):
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
         self.get_new_scan()
+        self.enable_buttons()
 
     def reject_scan(self):
         if self.img is None:
