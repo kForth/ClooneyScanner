@@ -108,7 +108,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string/>
+     <string>Click the top and bottom of a side of the bouding box.</string>
     </property>
     <property name="text">
      <string>Vertical Line</string>
@@ -127,6 +127,12 @@
      </rect>
     </property>
     <property name="toolTip">
+     <string>Click the 4 corners of the black bounding box.</string>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
      <string/>
     </property>
     <property name="text">
@@ -146,7 +152,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string/>
+     <string>Rotate the image by 180 degrees.</string>
     </property>
     <property name="text">
      <string>Rotate 180˚</string>
