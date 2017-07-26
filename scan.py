@@ -7,7 +7,6 @@ SHEET_WIDTH = 8.5
 SHEET_HEIGHT = 11
 
 DEBUG_SHOW_ALL_BOXES = False
-SENSITIVITY = 50
 
 NUMBERS_MODEL = [[True, True, True, False, True, True, True],
                  [False, False, True, False, False, True, False],
@@ -38,14 +37,14 @@ class Scanner(object):
         self.img_dir = img_dir
         self.marker_colour = sheet_config["marker_colour"]
         self.outline_colour = (0, 255, 0)  # RGB
-        self.xy_factor = (1, 1)
+        self.xy_factors = (1, 1)
 
     @staticmethod
     def round_colours(img):
         img = ((img / 255.0).round() * 255)
         return img.astype(np.uint8)
 
-    def read_box(self, src, dst, x, y, width, height):
+    def read_box(self, src, dst, x, y, width, height, min_val=50):
         x = int(x * self.xy_factors[0])
         y = int(y * self.xy_factors[1])
         width = int(width * self.xy_factors[0])
@@ -54,12 +53,12 @@ class Scanner(object):
 
         avg = np.sum(np.sum(np.sum(img2))) / (height * width * 3)
 
-        if avg < SENSITIVITY or DEBUG_SHOW_ALL_BOXES:
+        if avg < min_val or DEBUG_SHOW_ALL_BOXES:
             cv2.rectangle(dst, (x, y), (x + width, y + height), (0, 255, 0), thickness=3)
         else:
             cv2.rectangle(dst, (x, y), (x + width, y + height), (200, 200, 200), thickness=3)
 
-        return avg < SENSITIVITY
+        return avg < min_val
 
     def scan_sheet(self, image):
         scan_area = self.crop_scan_area(image)
@@ -193,23 +192,23 @@ class Scanner(object):
                     y_pos -= field["options"]["y_offset"] - self.config["marker_size"]
                 else:
                     pass
-                x_coords = (int(x_pos * self.xy_factor[0]), int((x_pos + width) * self.xy_factor[0]))
-                y_coords = (int(y_pos * self.xy_factor[1]), int((y_pos + height) * self.xy_factor[1]))
+                x_coords = (int(x_pos * self.xy_factors[0]), int((x_pos + width) * self.xy_factors[0]))
+                y_coords = (int(y_pos * self.xy_factors[1]), int((y_pos + height) * self.xy_factors[1]))
                 crop = scan_area[y_coords[0]:y_coords[1], x_coords[0]:x_coords[1]]
 
                 edged = cv2.Canny(crop, 100, 200)
                 edged = cv2.blur(edged, (5, 5))
                 (_, contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-                num_contours = len(contours)
-                if num_contours > 4:
+                save_img = len(contours) > 4
+                if save_img:
                     filename = str(data["team_number"]) + "-" + str(data["encoded_match_data"]) + "_" + label + ".png"
                     cv2.imwrite(self.img_dir + filename, crop)
 
                     pt1 = (x_coords[0], y_coords[0])
                     pt2 = (x_coords[1], y_coords[1])
                     cv2.rectangle(scan_area, pt1, pt2, self.outline_colour, thickness=3)
-                data[label] = num_contours > 4
+                data[label] = save_img
 
         data["match"] = data["encoded_match_data"][0:-1]
         if data["match"] == "":

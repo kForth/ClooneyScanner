@@ -50,7 +50,7 @@ class EditView(QMainWindow):
             if len(self.corners) >= 4:
                 self.corners = self.corners[-4:]
                 selected_points = sorted(self.corners, key=lambda l: sum(l))
-                new_points = ((400, 400), (img_w - 400, 400), (400, img_h - 400), (img_w - 400, img_h - 400))
+                new_points = ((200, 200), (img_w - 200, 200), (200, img_h - 200), (img_w - 200, img_h - 200))
                 new_points = sorted(new_points, key=lambda e: sum(e))
                 warp_matrix = cv2.getPerspectiveTransform(np.float32(selected_points), np.float32(new_points))
                 self.img = cv2.warpPerspective(self.img, warp_matrix, (img_w, img_h))
