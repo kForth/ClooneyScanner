@@ -11,6 +11,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import requests
 
+from runners import Runner
 from scan import Scanner
 
 
@@ -161,14 +162,12 @@ class ScanView(QMainWindow):
             'event': self.event_id
         }
 
-        try:
-            if self.entry_id is None:
-                data['id'] = self.entry_id
-            entry_id = requests.post('http://' + self.clooney_host + '/api/sql/add_entry', json=data)
-            self.data_history.append({'id': entry_id, 'data': data})
-        except Exception as ex:
-            self.data_history.append({'id': 0, 'data': data})
-            print(ex)
+        def post_func():
+            try:
+                requests.post('http://' + self.clooney_host + '/api/sql/add_entry', json=data)
+            except Exception as ex:
+                print(ex)
+        Runner(target=post_func).run()
 
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
