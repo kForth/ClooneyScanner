@@ -55,7 +55,6 @@ class ScanView(QMainWindow):
 
         self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
 
-        self.entry_id = None
         self.backup_img = np.zeros((1, 1, 3), np.uint8)
         self.img = np.zeros((1, 1, 3), np.uint8)
         self.raw_img = np.zeros((1, 1, 3), np.uint8)
@@ -133,6 +132,7 @@ class ScanView(QMainWindow):
         if self.img is None:
             return
         self.enable_inputs([])
+
         edited_data = {}
         for r in range(self.data_preview.model().rowCount()):
             key = self.data_preview.model().index(r, 0).data()
@@ -171,6 +171,7 @@ class ScanView(QMainWindow):
 
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
+        self.data_history.append(data)
         self.get_new_scan()
         self.enable_inputs()
 
@@ -217,7 +218,6 @@ class ScanView(QMainWindow):
         if self.data_history:
             info = self.data_history[-1]
             self.data_history = self.data_history[:-2]
-            self.entry_id = info['id']
             self.filename = info['data']['filename']
             shutil.move(self.scan_dir + "Processed/" + self.filename, self.scan_dir + self.filename)
             self.set_data(info['data']['data'])
@@ -237,7 +237,6 @@ class ScanView(QMainWindow):
         self.enable_inputs([])
         if raw_scan is None:
             try:
-                self.entry_id = None
                 files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
                 selected_file = files[0]
                 self.filename = selected_file.split("/")[-1]
