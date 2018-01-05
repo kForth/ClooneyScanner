@@ -6,6 +6,8 @@ import cv2
 
 class ScannerBase(object):
 
+    POSITIONS = ['Red 1', 'Red 2', 'Red 3', 'Blue 1', 'Blue 2', 'Blue 3']
+
     NUMBERS_MODEL = [[True, True, True, False, True, True, True],
                      [False, False, True, False, False, True, False],
                      [True, False, True, True, True, False, True],

@@ -16,6 +16,7 @@ from scanners import LegacyScanner
 
 
 class ScanView(QMainWindow):
+
     def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath, clooney_host):
         super().__init__()
         uic.loadUi('ui/ScanView.ui', self)
@@ -138,6 +139,9 @@ class ScanView(QMainWindow):
             key = self.data_preview.model().index(r, 0).data()
             if key in self.fields.keys() and self.fields[key]['type'] in ['HorizontalOptions', 'Boolean']:
                 value = self.data_preview.cellWidget(r, 1).currentText()
+            elif key in ['pos']:
+                value = self.data_preview.cellWidget(r, 1).currentText()
+                value = self.scanner.POSITIONS.index(value)
             else:
                 value = self.data_preview.model().index(r, 1).data()
             data_type = self.data_types[key]
@@ -204,6 +208,13 @@ class ScanView(QMainWindow):
                     options = list(map(lambda x: x[0], self.fields[key]['options']['options'])) + ['']
                 c.addItems(map(str, options))
                 c.setCurrentIndex(options.index(data[key]))
+                self.data_preview.setCellWidget(r, 1, c)
+            elif key in ['pos']:
+                c = QComboBox()
+                c.addItems(self.scanner.POSITIONS)
+                if data[key] >= len(self.scanner.POSITIONS):
+                    c.setCurrentIndex(0)
+                c.setCurrentIndex(data[key])
                 self.data_preview.setCellWidget(r, 1, c)
             else:
                 self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
