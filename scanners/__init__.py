@@ -1,0 +1,1 @@
+from scanners.legacy import LegacyScanner

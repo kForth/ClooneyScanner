@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import *
 import requests
 
 from runners import Runner
-from scan import Scanner
+from scanners import LegacyScanner
 
 
 class ScanView(QMainWindow):
@@ -53,7 +53,7 @@ class ScanView(QMainWindow):
 
         self.fields = dict(zip(map(lambda x: x['id'], self.fields_file), self.fields_file))
 
-        self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
+        self.scanner = LegacyScanner(self.fields_file, self.config, self.scan_dir + "images/")
 
         self.backup_img = np.zeros((1, 1, 3), np.uint8)
         self.img = np.zeros((1, 1, 3), np.uint8)
