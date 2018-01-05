@@ -182,10 +182,10 @@
    <widget class="QPushButton" name="start_scanning">
     <property name="geometry">
      <rect>
-      <x>216</x>
-      <y>240</y>
+      <x>210</x>
+      <y>245</y>
       <width>150</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -216,9 +216,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>240</y>
+      <y>245</y>
       <width>150</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">

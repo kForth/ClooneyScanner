@@ -31,12 +31,15 @@
   <property name="windowTitle">
    <string>Clooney Scanner</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableWidget" name="data_preview">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>9</y>
+      <x>20</x>
+      <y>10</y>
       <width>450</width>
       <height>440</height>
      </rect>
@@ -85,10 +88,10 @@
    <widget class="QPushButton" name="submit_button">
     <property name="geometry">
      <rect>
-      <x>736</x>
-      <y>450</y>
+      <x>230</x>
+      <y>455</y>
       <width>100</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -110,10 +113,10 @@
    <widget class="QPushButton" name="reject_button">
     <property name="geometry">
      <rect>
-      <x>645</x>
-      <y>450</y>
+      <x>125</x>
+      <y>455</y>
       <width>100</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -126,8 +129,8 @@
    <widget class="QLabel" name="scan_preview">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>40</y>
+      <x>490</x>
+      <y>10</y>
       <width>340</width>
       <height>440</height>
      </rect>
@@ -143,7 +146,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>480</y>
+      <y>485</y>
       <width>340</width>
       <height>13</height>
      </rect>
@@ -160,10 +163,10 @@
    <widget class="QPushButton" name="refresh_button">
     <property name="geometry">
      <rect>
-      <x>14</x>
-      <y>5</y>
-      <width>60</width>
-      <height>40</height>
+      <x>489</x>
+      <y>455</y>
+      <width>61</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -194,10 +197,10 @@
    <widget class="QPushButton" name="four_corners_button">
     <property name="geometry">
      <rect>
-      <x>65</x>
-      <y>5</y>
+      <x>555</x>
+      <y>455</y>
       <width>125</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="text">
@@ -222,10 +225,10 @@
    <widget class="QPushButton" name="go_back_button">
     <property name="geometry">
      <rect>
-      <x>554</x>
-      <y>450</y>
+      <x>20</x>
+      <y>455</y>
       <width>100</width>
-      <height>40</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -238,10 +241,10 @@
    <widget class="QPushButton" name="rotate_180_button">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>5</y>
-      <width>95</width>
-      <height>40</height>
+      <x>685</x>
+      <y>455</y>
+      <width>105</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -272,10 +275,10 @@
    <widget class="QPushButton" name="toggle_view_button">
     <property name="geometry">
      <rect>
-      <x>265</x>
-      <y>5</y>
-      <width>101</width>
-      <height>40</height>
+      <x>795</x>
+      <y>455</y>
+      <width>36</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -285,7 +288,7 @@
      </sizepolicy>
     </property>
     <property name="text">
-     <string notr="true">Toggle View</string>
+     <string notr="true">👁‍</string>
     </property>
     <property name="iconSize">
      <size>
