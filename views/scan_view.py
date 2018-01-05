@@ -67,6 +67,7 @@ class ScanView(QMainWindow):
         self.selected_img = "img"
         self.filename = ""
         self.data_types = {}
+        self.filepath_label_old_text = ""
 
         self.get_new_scan()
 
@@ -111,10 +112,15 @@ class ScanView(QMainWindow):
             self.set_img(self.img)
             self.current_img = np.copy(self.img)
 
+    def set_filepath_label_text(self, text):
+        self.filepath_label_old_text = self.filepath_label.text()
+        self.filepath_label.setText(text)
+
     def handle_four_corners_button(self):
         if self.click_mode == "four_corners":
             self.reset_click_mode()
         else:
+            self.set_filepath_label_text('Click on the 4 corners of the bounding box.')
             self.selected_img = 'raw'
             self.set_img(self.raw_img)
             self.enable_inputs('four')
@@ -133,6 +139,7 @@ class ScanView(QMainWindow):
 
     def reset_click_mode(self):
         self.scan_preview.setCursor(Qt.ArrowCursor)
+        self.set_filepath_label_text(self.filepath_label_old_text)
         self.enable_inputs()
         self.click_mode = ""
         self.corners = []
@@ -250,7 +257,7 @@ class ScanView(QMainWindow):
             shutil.move(self.scan_dir + "Processed/" + self.filename, self.scan_dir + self.filename)
             self.set_data(info['data']['data'])
             self.set_img(cv2.imread(self.scan_dir + "Marked/" + self.filename))
-            self.filepath_label.setText(self.filename)
+            self.set_filepath_label_text(self.filename)
             self.enable_inputs()
 
             try:
@@ -268,7 +275,7 @@ class ScanView(QMainWindow):
                 files = glob.glob(self.scan_dir + "*jpg") + glob.glob(self.scan_dir + "*.png")
                 selected_file = files[0]
                 self.filename = selected_file.split("/")[-1]
-                self.filepath_label.setText(files[0])
+                self.set_filepath_label_text(files[0])
                 raw_scan = cv2.imread(selected_file)
             except Exception as ex:
                 print("Failed to read img")
