@@ -146,7 +146,7 @@ class ScanView(QMainWindow):
                 value = self.data_preview.model().index(r, 1).data()
             data_type = self.data_types[key]
             data_type_name = data_type.__name__
-            edited_data[key] = eval(data_type_name + "('" + value + "')", {"__builtins__": {data_type_name: data_type}})
+            edited_data[key] = eval('{0}("{1}")'.format(data_type_name, value), {"__builtins__": {data_type_name: data_type}})
             edited_data["filename"] = self.filename
 
         try:
