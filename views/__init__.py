@@ -68,7 +68,10 @@ class MainWindow(QMainWindow):
 
     def load_files(self):
         try:
-            return (open(self.data_filepath.text(), "w+"),
+            data_file_dir = "/".join(self.data_filepath.text().split("/")[:-1])
+            if not os.path.isdir(data_file_dir):
+                os.makedirs(data_file_dir)
+            return (self.data_filepath.text(),
                     json.load(open(self.config_filepath.text())),
                     json.load(open(self.fields_filepath.text())))
         except Exception as ex:
