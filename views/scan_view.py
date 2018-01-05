@@ -217,7 +217,7 @@ class ScanView(QMainWindow):
     def load_last_sheet(self):
         if self.data_history:
             info = self.data_history[-1]
-            self.data_history = self.data_history[:-2]
+            self.data_history = self.data_history[:-1]
             self.filename = info['data']['filename']
             shutil.move(self.scan_dir + "Processed/" + self.filename, self.scan_dir + self.filename)
             self.set_data(info['data']['data'])
