@@ -22,7 +22,6 @@ class ScanView(QMainWindow):
         uic.loadUi('ui/ScanView.ui', self)
 
         self.clooney_host = clooney_host
-        self.data_history = []
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
         self.data_preview.horizontalHeader().setSectionResizeMode(1, QHeaderView.Interactive)
@@ -192,7 +191,6 @@ class ScanView(QMainWindow):
 
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
-        self.data_history.append(data)
         self.get_new_scan()
         self.enable_inputs()
 
@@ -250,22 +248,21 @@ class ScanView(QMainWindow):
         self.enable_inputs()
 
     def load_last_sheet(self):
-        if self.data_history:
-            info = self.data_history[-1]
-            self.data_history = self.data_history[:-1]
-            self.filename = info['data']['filename']
+        try:
+            data = json.load(open(self.data_filepath))
+        except:
+            data = []
+        if data:
+            info = data[-1]
+            self.filename = info['filename']
+            del info['filename']
             shutil.move(self.scan_dir + "Processed/" + self.filename, self.scan_dir + self.filename)
-            self.set_data(info['data']['data'])
+            self.set_data(info)
             self.set_img(cv2.imread(self.scan_dir + "Marked/" + self.filename))
             self.set_filepath_label_text(self.filename)
             self.enable_inputs()
 
-            try:
-                data = json.load(open(self.data_filepath))
-                if data:
-                    data = data[:-1]
-            except:
-                data = []
+            data = data[:-1]
             json.dump(data, open(self.data_filepath, "w+"))
 
     def get_new_scan(self, raw_scan=None):
