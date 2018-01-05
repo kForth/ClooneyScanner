@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import cv2
 import numpy as np
 
@@ -42,7 +44,7 @@ class LegacyScanner(ScannerBase):
         box_size = self._config["box_size"]
         box_spacing = self._config["box_spacing"]
         y_spacing = self._config["y_spacing"]
-        data = {}
+        data = OrderedDict({})
 
         img2 = cv2.cvtColor(scan_area, cv2.COLOR_RGB2GRAY)
         thresh, img2 = cv2.threshold(img2, 100, 255, cv2.THRESH_BINARY)
@@ -185,12 +187,10 @@ class LegacyScanner(ScannerBase):
                     cv2.rectangle(scan_area, pt1, pt2, self._highlight_colour, thickness=3)
                 data[label] = save_img
 
-        data["match"] = data["encoded_match_data"][0:-1]
-        if data["match"] == "":
-            data["match"] = 0
-        data["pos"] = data["encoded_match_data"][-1]
-        if data["pos"] == "":
-            data["pos"] = 0
+        data["match"] = int("0" + data["encoded_match_data"][0:-1])
+        data["pos"] = int("0" + data["encoded_match_data"][-1])
+        data.move_to_end("pos", last=False)
+        data.move_to_end("match", last=False)
 
         del data["encoded_match_data"]
 
