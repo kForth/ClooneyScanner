@@ -168,6 +168,8 @@ class ScanView(QMainWindow):
             edited_data[key] = eval('{0}("{1}")'.format(data_type_name, value), {"__builtins__": {data_type_name: data_type}})
             edited_data["filename"] = self.filename
 
+        if not edited_data['team_number']:
+            return
         try:
             data = json.load(open(self.data_filepath))
         except:
