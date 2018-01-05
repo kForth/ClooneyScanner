@@ -128,9 +128,6 @@ class ScanView(QMainWindow):
         self.set_img(self.img)
         self.selected_img = 'img'
 
-    def select_corners_window(self):
-        EditView(self.scan_dir, self.filename, lambda: self.look_for_scan())
-
     def submit_scan(self):
         if self.img is None:
             return
