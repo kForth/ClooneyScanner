@@ -66,7 +66,7 @@ class ScanView(QMainWindow):
 
         self.show()
 
-    def enable_buttons(self, enabled=('submit', 'reject', 'go_back', 'refresh', 'four', 'rotate', 'toggle')):
+    def enable_inputs(self, enabled=('submit', 'reject', 'go_back', 'refresh', 'four', 'rotate', 'toggle', 'data')):
         self.submit_button.setEnabled('submit' in enabled)
         self.reject_button.setEnabled('reject' in enabled)
         self.go_back_button.setEnabled('go_back' in enabled)
@@ -74,6 +74,7 @@ class ScanView(QMainWindow):
         self.four_corners_button.setEnabled('four' in enabled)
         self.rotate_180_button.setEnabled('rotate' in enabled)
         self.toggle_view_button.setEnabled('toggle' in enabled)
+        self.data_preview.setEnabled('data' in enabled)
 
     def handle_img_click(self, event):
         if self.click_mode == "four_corners":
@@ -105,9 +106,9 @@ class ScanView(QMainWindow):
         else:
             self.selected_img = 'raw'
             self.set_img(self.raw_img)
-            self.enable_buttons('four')
+            self.enable_inputs('four')
             self.corners = []
-            self.setCursor(Qt.PointingHandCursor)
+            self.scan_preview.setCursor(Qt.PointingHandCursor)
             self.click_mode = "four_corners"
 
     def handle_rotate_180_button(self):
@@ -120,8 +121,8 @@ class ScanView(QMainWindow):
         self.reset_click_mode()
 
     def reset_click_mode(self):
-        self.setCursor(Qt.ArrowCursor)
-        self.enable_buttons()
+        self.scan_preview.setCursor(Qt.ArrowCursor)
+        self.enable_inputs()
         self.click_mode = ""
         self.corners = []
         self.set_img(self.img)
@@ -130,7 +131,7 @@ class ScanView(QMainWindow):
     def submit_scan(self):
         if self.img is None:
             return
-        self.enable_buttons([])
+        self.enable_inputs([])
         edited_data = {}
         for r in range(self.data_preview.model().rowCount()):
             key = self.data_preview.model().index(r, 0).data()
@@ -172,7 +173,7 @@ class ScanView(QMainWindow):
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
         self.get_new_scan()
-        self.enable_buttons()
+        self.enable_inputs()
 
     def reject_scan(self):
         if self.img is None:
@@ -208,17 +209,10 @@ class ScanView(QMainWindow):
                 self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
 
     def look_for_scan(self):
-        self.set_buttons_enabled(False)
+        self.enable_inputs([])
         self.update()
         self.get_new_scan()
-        self.set_buttons_enabled(True)
-
-    def set_buttons_enabled(self, enabled):
-        self.submit_button.setEnabled(enabled)
-        self.reject_button.setEnabled(enabled)
-        self.refresh_button.setEnabled(enabled)
-        self.four_corners_button.setEnabled(enabled)
-        self.rotate_180_button.setEnabled(enabled)
+        self.enable_inputs()
 
     def load_last_sheet(self):
         if self.data_history:
@@ -230,7 +224,7 @@ class ScanView(QMainWindow):
             self.set_data(info['data']['data'])
             self.set_img(cv2.imread(self.scan_dir + "Marked/" + self.filename))
             self.filepath_label.setText(self.filename)
-            self.set_buttons_enabled(True)
+            self.enable_inputs()
 
             try:
                 data = json.load(open(self.data_filepath))
@@ -241,7 +235,7 @@ class ScanView(QMainWindow):
             json.dump(data, open(self.data_filepath, "w+"))
 
     def get_new_scan(self, raw_scan=None):
-        self.set_buttons_enabled(False)
+        self.enable_inputs([])
         if raw_scan is None:
             try:
                 self.entry_id = None
@@ -265,4 +259,4 @@ class ScanView(QMainWindow):
         self.set_img(self.img)
         self.set_data(data)
 
-        self.set_buttons_enabled(True)
+        self.enable_inputs()
