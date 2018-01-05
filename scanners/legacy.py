@@ -90,7 +90,8 @@ class LegacyScanner(ScannerBase):
                 x_pos -= box_size
                 number = ""
                 for i in range(digits - 3):
-                    box_val = self._read_box(img2, scan_area, x_pos - i * (box_size + box_spacing / 4), y_pos, box_size, box_size)
+                    x = x_pos - i * (box_size + box_spacing / 4)
+                    box_val = self._read_box(img2, scan_area, x, y_pos, box_size, box_size)
                     number = ("1" if box_val else "0") + number
                 try:
                     data[label] = str(int(number, 2))
@@ -152,9 +153,9 @@ class LegacyScanner(ScannerBase):
                     bool_values = []
                     values = []
                     for j in range(len(options)):
-                        bool_values.append(
-                                self._read_box(img2, scan_area, x_pos + i * (box_size + box_spacing),
-                                               y_pos + j * (box_size + box_spacing), box_size, box_size))
+                        value = self._read_box(img2, scan_area, x_pos + i * (box_size + box_spacing),
+                                               y_pos + j * (box_size + box_spacing), box_size, box_size)
+                        bool_values.append(value)
                     for k in range(len(bool_values)):
                         if bool_values[k]:
                             values.append(options[k])
