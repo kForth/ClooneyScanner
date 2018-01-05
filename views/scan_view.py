@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import *
 import requests
 
 from scan import Scanner
-from views.edit_view import EditView
 
 
 class ScanView(QMainWindow):
