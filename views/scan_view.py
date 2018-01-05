@@ -17,7 +17,7 @@ from scan import Scanner
 class ScanView(QMainWindow):
     def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath, clooney_host):
         super().__init__()
-        uic.loadUi('qt/ScanView.ui', self)
+        uic.loadUi('ui/ScanView.ui', self)
 
         self.clooney_host = clooney_host
         self.data_history = []

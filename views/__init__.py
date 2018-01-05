@@ -11,7 +11,7 @@ from views.scan_view import ScanView
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('qt/MainView.ui', self)
+        uic.loadUi('ui/MainView.ui', self)
         self.settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "KestinGoforth", "ClooneyScanner")
 
         self.event_id_entry.setText(self.settings.value("event_id"))
