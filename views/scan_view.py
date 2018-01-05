@@ -157,6 +157,9 @@ class ScanView(QMainWindow):
                 value = self.data_preview.cellWidget(r, 2).currentText()
             elif key in ['pos']:
                 value = self.data_preview.cellWidget(r, 2).currentText()
+                if value not in self.scanner.POSITIONS:
+                    self.enable_inputs()
+                    return
                 value = self.scanner.POSITIONS.index(value)
             else:
                 value = self.data_preview.model().index(r, 2).data()
