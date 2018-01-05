@@ -227,8 +227,8 @@ class Scanner(object):
 
         hue_target = list(cv2.cvtColor(np.array([[self.marker_colour]]).astype(np.uint8), cv2.COLOR_RGB2HSV)[0, 0])
         if hue_target[0] < 10 or hue_target[0] > 170:
-            img_hsv = cv2.cvtColor(img2, cv2.COLOR_RGB2HSV)  # Image is BGR, but we use RGB because red is dumb is HSV
-            target_colour = list(reversed(self.marker_colour))  # Reverse the RGB to BGR
+            img_hsv = cv2.cvtColor(img2, cv2.COLOR_RGB2HSV)  # Read BGR image as RGB to switch Blue and Red channels.
+            target_colour = list(reversed(self.marker_colour))  # Reverse the marker colour to match.
         else:
             img_hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
             target_colour = self.marker_colour

@@ -10,8 +10,7 @@ from views.scan_view import ScanView
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        # noinspection PyArgumentList
-        QMainWindow.__init__(self)
+        super().__init__()
         uic.loadUi('qt/MainView.ui', self)
         self.settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "KestinGoforth", "ClooneyScanner")
 
@@ -30,18 +29,21 @@ class MainWindow(QMainWindow):
         self.start_scanning.clicked.connect(self.show_scan_view)
         self.cancel_button.clicked.connect(self.close)
 
+        self.scan_view = None
+
         self.show()
 
     def show_scan_view(self):
-        files = self.load_files()
-        if not files:
-            return
         self.settings.setValue("event_id", self.event_id_entry.text())
         self.settings.setValue("clooney_host", self.clooney_hostname_entry.text())
         self.settings.setValue("data_filepath", self.data_filepath.text())
         self.settings.setValue("config_filepath", self.config_filepath.text())
         self.settings.setValue("fields_filepath", self.fields_filepath.text())
         self.settings.setValue("scans_dirpath", self.scans_dirpath.text())
+
+        files = self.load_files()
+        if not files:
+            return
 
         event_id = self.event_id_entry.text()
         host = self.clooney_hostname_entry.text()
