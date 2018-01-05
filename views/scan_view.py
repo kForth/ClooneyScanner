@@ -40,6 +40,10 @@ class ScanView(QMainWindow):
         self.fields_file = fields_file
         self.scan_dir = scan_dirpath
 
+        for sub_folder in ["Processed", "Rejected", "Marked", "images"]:
+            if not os.path.isdir(self.scan_dir + sub_folder + "/"):
+                os.makedirs(self.scan_dir + sub_folder + "/")
+
         self.fields = dict(zip(map(lambda x: x['id'], self.fields_file), self.fields_file))
 
         self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
