@@ -24,7 +24,11 @@ class ScanView(QMainWindow):
         self.clooney_host = clooney_host
         self.data_history = []
 
-        self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
+        self.data_preview.horizontalHeader().setSectionResizeMode(1, QHeaderView.Interactive)
+        self.data_preview.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.data_preview.horizontalHeader().resizeSection(0, 160)
+        self.data_preview.horizontalHeader().resizeSection(1, 160)
 
         self.scan_preview.setScaledContents(True)
         self.scan_preview.mousePressEvent = self.handle_img_click
@@ -138,12 +142,12 @@ class ScanView(QMainWindow):
         for r in range(self.data_preview.model().rowCount()):
             key = self.data_preview.model().index(r, 0).data()
             if key in self.fields.keys() and self.fields[key]['type'] in ['HorizontalOptions', 'Boolean']:
-                value = self.data_preview.cellWidget(r, 1).currentText()
+                value = self.data_preview.cellWidget(r, 2).currentText()
             elif key in ['pos']:
-                value = self.data_preview.cellWidget(r, 1).currentText()
+                value = self.data_preview.cellWidget(r, 2).currentText()
                 value = self.scanner.POSITIONS.index(value)
             else:
-                value = self.data_preview.model().index(r, 1).data()
+                value = self.data_preview.model().index(r, 2).data()
             data_type = self.data_types[key]
             data_type_name = data_type.__name__
             edited_data[key] = eval('{0}("{1}")'.format(data_type_name, value), {"__builtins__": {data_type_name: data_type}})
@@ -195,11 +199,17 @@ class ScanView(QMainWindow):
         self.data_types = dict(zip(data.keys(), map(type, data.values())))
         self.data_preview.setRowCount(len(data))
 
-        for r in range(len(data)):
-            key = list(data.keys())[r]
+        for row in range(len(data)):
+            key = list(data.keys())[row]
             key_item = QTableWidgetItem(key)
             key_item.setFlags(key_item.flags() & Qt.ItemIsEditable)
-            self.data_preview.setItem(r, 0, key_item)
+            if key in ['match', 'pos']:
+                label_item = QTableWidgetItem(key.title())
+            else:
+                label_item = QTableWidgetItem(self.fields[key]['options']['label'])
+            label_item.setFlags(label_item.flags() & Qt.ItemIsEditable)
+            self.data_preview.setItem(row, 0, key_item)
+            self.data_preview.setItem(row, 1, label_item)
             if key in self.fields.keys() and self.fields[key]['type'] in ['HorizontalOptions', 'Boolean']:
                 c = QComboBox()
                 if self.fields[key]['type'] == 'Boolean':
@@ -208,16 +218,16 @@ class ScanView(QMainWindow):
                     options = list(map(lambda x: x[0], self.fields[key]['options']['options'])) + ['']
                 c.addItems(map(str, options))
                 c.setCurrentIndex(options.index(data[key]))
-                self.data_preview.setCellWidget(r, 1, c)
+                self.data_preview.setCellWidget(row, 2, c)
             elif key in ['pos']:
                 c = QComboBox()
                 c.addItems(self.scanner.POSITIONS)
                 if data[key] >= len(self.scanner.POSITIONS):
                     c.setCurrentIndex(0)
                 c.setCurrentIndex(data[key])
-                self.data_preview.setCellWidget(r, 1, c)
+                self.data_preview.setCellWidget(row, 2, c)
             else:
-                self.data_preview.setItem(r, 1, QTableWidgetItem(str(data[key])))
+                self.data_preview.setItem(row, 2, QTableWidgetItem(str(data[key])))
 
     def look_for_scan(self):
         self.enable_inputs([])
