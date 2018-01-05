@@ -89,7 +89,7 @@ class LegacyScanner(ScannerBase):
                 digits = len(bin(int("9" * field["options"]["digits"]))[2:])
                 x_pos -= box_size
                 number = ""
-                for i in range(digits - 1):
+                for i in range(digits - 3):
                     box_val = self._read_box(img2, scan_area, x_pos - i * (box_size + box_spacing / 4), y_pos, box_size, box_size)
                     number = ("1" if box_val else "0") + number
                 try:
