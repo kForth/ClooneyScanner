@@ -74,8 +74,8 @@ class MainWindow(QMainWindow):
             if not os.path.isdir(data_file_dir):
                 os.makedirs(data_file_dir)
             return (self.data_filepath.text(),
-                    json.load(open(self.config_filepath.text())),
-                    json.load(open(self.fields_filepath.text())))
+                    self.config_filepath.text(),
+                    self.fields_filepath.text())
         except Exception as ex:
             print(ex)
             return False

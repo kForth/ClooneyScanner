@@ -46,19 +46,22 @@ class ScanView(QMainWindow):
         self.rotate_180_button.clicked.connect(self.handle_rotate_180_button)
         self.toggle_view_button.clicked.connect(self.handle_toggle_view_button)
 
+        self.config_file = config_file
+        self.fields_file = fields_file
+
         self.event_id = event_id
         self.data_filepath = data_file
-        self.config = config_file
-        self.fields_file = fields_file
+        self.config = json.load(open(self.config_file))
+        self.field_list = json.load(open(self.fields_file))
         self.scan_dir = scan_dirpath
 
         for sub_folder in ["Processed", "Rejected", "Marked", "images"]:
             if not os.path.isdir(self.scan_dir + sub_folder + "/"):
                 os.makedirs(self.scan_dir + sub_folder + "/")
 
-        self.fields = dict(zip(map(lambda x: x['id'], self.fields_file), self.fields_file))
+        self.fields = dict(zip(map(lambda x: x['id'], self.field_list), self.field_list))
 
-        self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
+        self.scanner = Scanner(self.field_list, self.config, self.scan_dir + "images/")
 
         self.backup_img = np.zeros((1, 1, 3), np.uint8)
         self.img = np.zeros((1, 1, 3), np.uint8)
@@ -248,6 +251,10 @@ class ScanView(QMainWindow):
                 self.data_preview.setItem(row, 2, QTableWidgetItem(str(data[key])))
 
     def look_for_scan(self):
+        self.config = json.load(open(self.config_file))
+        self.field_list = json.load(open(self.fields_file))
+        self.scanner.set_config(self.config)
+        self.scanner.set_fields(self.field_list)
         self.enable_inputs([])
         self.update()
         self.get_new_scan()
