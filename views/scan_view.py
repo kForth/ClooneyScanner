@@ -97,7 +97,7 @@ class ScanView(QMainWindow):
                 new_points = ((200, 200), (img_w - 200, 200), (200, img_h - 200), (img_w - 200, img_h - 200))
                 new_points = sorted(new_points, key=lambda e: sum(e))
                 warp_matrix = cv2.getPerspectiveTransform(np.float32(selected_points), np.float32(new_points))
-                self.raw_img = cv2.warpPerspective(self.raw_img, warp_matrix, (img_w, img_h))
+                self.raw_img = cv2.warpPerspective(self.raw_img, warp_matrix, (img_w, img_h), borderMode=cv2.BORDER_CONSTANT, borderValue=(255, 255, 255))
                 self.reset_click_mode()
                 self.get_new_scan(self.raw_img)
 
