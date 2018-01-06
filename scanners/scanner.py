@@ -21,6 +21,12 @@ class Scanner(ScannerBase):
         self._highlight_colour = (0, 255, 0)  # RGB
         self._xy_factors = (1, 1)
 
+    def set_config(self, config):
+        self._config = config
+
+    def set_fields(self, fields):
+        self._scan_fields = fields
+
     def _read_box(self, src, dst, x, y, width, height, min_val=50):
         x = int(x * self._xy_factors[0])
         y = int(y * self._xy_factors[1])
@@ -28,7 +34,7 @@ class Scanner(ScannerBase):
         height = int(height * self._xy_factors[1])
         img2 = src[y:y + height, x:x + width]
 
-        avg = np.sum(np.sum(np.sum(img2))) / (height * width * 3)
+        avg = img2.sum() / (3 * img2.size)
 
         if avg < min_val or self.DEBUG_SHOW_ALL_BOXES:
             cv2.rectangle(dst, (x, y), (x + width, y + height), (0, 255, 0), thickness=3)
@@ -49,7 +55,7 @@ class Scanner(ScannerBase):
         img2 = cv2.cvtColor(scan_area, cv2.COLOR_RGB2GRAY)
         thresh, img2 = cv2.threshold(img2, 100, 255, cv2.THRESH_BINARY)
 
-        for field in self._scan_fields:
+        for field in list(self._scan_fields):
             label = field["id"]
             field_type = field["type"]
             x_pos = field["x_pos"]
@@ -86,17 +92,17 @@ class Scanner(ScannerBase):
                         nums += "_"
                 data[label] = nums
             elif field_type == "Barcode":
-                digits = len(bin(int("9" * field["options"]["digits"]))[2:])
-                x_pos -= box_size
-                number = ""
-                for i in range(digits - 3):
-                    x = x_pos - i * (box_size + box_spacing / 4)
-                    box_val = self._read_box(img2, scan_area, x, y_pos, box_size, box_size)
-                    number = ("1" if box_val else "0") + number
+                digits = len(bin(int("9" * field["options"]["digits"]))[2:]) - 3
+                x_offset = -box_size
+                values = []
+                for i in range(digits):
+                    values.append(self._read_box(img2, scan_area, x_pos + x_offset, y_pos, box_size, box_size))
+                    x_offset -= box_size + self._config['barcode_spacing']
+                number = "".join(["1" if e else "0" for e in values][::-1])
                 try:
                     data[label] = str(int(number, 2))
                 except:
-                    data[label] = "____"
+                    data[label] = ""
 
             elif field_type == "BoxNumber":
                 digits = field["options"]["digits"]
@@ -180,14 +186,14 @@ class Scanner(ScannerBase):
                 edged = cv2.blur(edged, (5, 5))
                 (_, contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-                save_img = len(contours) > 4 or crop.mean() < 250
+                save_img = len(contours) > 4 or crop.mean() < 240
                 if save_img:
                     filename = str(data["team_number"]) + "-" + str(data["encoded_match_data"]) + "_" + label + ".png"
                     cv2.imwrite(self._img_dir + filename, crop)
 
                 if save_img or self.DEBUG_SHOW_ALL_BOXES:
                     cv2.rectangle(scan_area, pt1, pt2, self._highlight_colour, thickness=3)
-                data[label] = save_img
+                data[label] = str(save_img)
 
         data["match"] = int("0" + data["encoded_match_data"][0:-1])
         data["pos"] = int("0" + data["encoded_match_data"][-1])
@@ -218,7 +224,7 @@ class Scanner(ScannerBase):
         edged = cv2.blur(edged, (5, 5))
 
         (_, contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:2]
         cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
 
         x_coords = []
