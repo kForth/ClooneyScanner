@@ -13,6 +13,7 @@ import requests
 
 from runners import Runner
 from scanners import LegacyScanner
+from scanners.scanner import Scanner
 
 
 class ScanView(QMainWindow):
@@ -57,7 +58,7 @@ class ScanView(QMainWindow):
 
         self.fields = dict(zip(map(lambda x: x['id'], self.fields_file), self.fields_file))
 
-        self.scanner = LegacyScanner(self.fields_file, self.config, self.scan_dir + "images/")
+        self.scanner = Scanner(self.fields_file, self.config, self.scan_dir + "images/")
 
         self.backup_img = np.zeros((1, 1, 3), np.uint8)
         self.img = np.zeros((1, 1, 3), np.uint8)
