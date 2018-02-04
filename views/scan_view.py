@@ -173,6 +173,7 @@ class ScanView(QMainWindow):
             edited_data["filename"] = self.filename
 
         if not edited_data['team_number']:
+            self.enable_inputs()
             return
         try:
             data = json.load(open(self.data_filepath))
