@@ -107,7 +107,7 @@ class Scanner(ScannerBase):
             elif field_type == "BoxNumber":
                 digits = field["options"]["digits"]
                 x_pos += self._config["label_offset"]
-                y_pos += y_spacing * 2
+                y_pos += y_spacing * 1.5
                 number = ""
                 for i in range(digits):
                     values = []
