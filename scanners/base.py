@@ -29,9 +29,6 @@ class ScannerBase(object):
                          None,
                          [True, True, True, True, False, True, False]]
 
-    def __init__(self):
-        pass
-
     @abstractmethod
     def scan_sheet(self, image):
         pass
@@ -50,7 +47,7 @@ class ScannerBase(object):
         return img.astype(np.uint8)
 
     @staticmethod
-    def _show_sheet(img):
-        cv2.imshow("Image", cv2.resize(img, (425, 550)))
+    def _show_sheet(img, title="Image"):
+        cv2.imshow(title, cv2.resize(img, (425, 550)))
         cv2.waitKey(0)
         cv2.destroyAllWindows()
