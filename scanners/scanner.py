@@ -224,13 +224,13 @@ class Scanner(ScannerBase):
         edged = cv2.blur(edged, (5, 5))
 
         (_, contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:2]
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]  # grab the 4 biggest contours.
         cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
 
         x_coords = []
         y_coords = []
 
-        for cnt in contours[:4]:
+        for cnt in contours:
             for e in cnt:
                 for d in e:
                     x_coords.append(d[0])
