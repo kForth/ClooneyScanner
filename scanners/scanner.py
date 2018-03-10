@@ -124,7 +124,7 @@ class Scanner(ScannerBase):
                 options = field["options"]["options"]
                 note_width = 0 if not field["options"]["note_space"] else (1 + field["options"]["note_width"]) * (
                     box_size + box_spacing)
-                x_pos += self._config["label_offset"] + note_width + self._config["marker_size"]
+                x_pos += self._config["label_offset"] + note_width + self._config["marker_size"] + field['options']['offset']
                 data_type = field["options"]["type"]
 
                 values = []
