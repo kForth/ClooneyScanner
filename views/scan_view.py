@@ -237,7 +237,7 @@ class ScanView(QMainWindow):
                 if self.fields[key]['type'] == 'Boolean':
                     options = [1, 0]
                 else:
-                    options = list(map(lambda x: x[0], self.fields[key]['options']['options'])) + ['']
+                    options = self.fields[key]['options']['options'] + ['']
                 c.addItems(map(str, options))
                 c.setCurrentIndex(options.index(data[key]))
                 self.data_preview.setCellWidget(row, 2, c)
