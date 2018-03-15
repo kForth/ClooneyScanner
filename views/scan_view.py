@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import *
 import requests
 
 from runners import Runner
-from scanners import LegacyScanner
 from scanners.scanner import Scanner
 
 
