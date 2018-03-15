@@ -216,7 +216,7 @@ class LegacyScanner(ScannerBase):
             img_hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
             target_colour = self._marker_colour
 
-        mask_range = self._get_colour_mask_range(*target_colour, 50)
+        mask_range = self._get_colour_mask_range(*(target_colour + [50]))
         mask = cv2.inRange(img_hsv, *mask_range)
         res = cv2.bitwise_and(img, img, mask=mask)
 
