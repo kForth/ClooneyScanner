@@ -13,6 +13,7 @@ import requests
 
 from runners import Runner
 from scanners.scanner import Scanner
+from tba_py import TBA
 
 
 class ScanView(QMainWindow):
@@ -21,7 +22,12 @@ class ScanView(QMainWindow):
         super().__init__()
         uic.loadUi('ui/ScanView.ui', self)
 
-        self.clooney_host = clooney_host
+        try:
+            self.tba = TBA('GdZrQUIjmwMZ3XVS622b6aVCh8CLbowJkCs5BmjJl2vxNuWivLz3Sf3PaqULUiZW')
+            self.teams = self.tba.get_event_teams_keys(event_id)  # TODO: Verify this, I want [1503, 5406, 1114...]
+        except:
+            self.tba = None
+            self.teams = None
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
         self.data_preview.horizontalHeader().setSectionResizeMode(1, QHeaderView.Interactive)
@@ -53,6 +59,7 @@ class ScanView(QMainWindow):
         self.config = json.load(open(self.config_file))
         self.field_list = json.load(open(self.fields_file))
         self.scan_dir = scan_dirpath
+        self.clooney_host = clooney_host
 
         for sub_folder in ["Processed", "Rejected", "Marked", "images"]:
             if not os.path.isdir(self.scan_dir + sub_folder + "/"):
@@ -70,6 +77,7 @@ class ScanView(QMainWindow):
         self.filename = ""
         self.data_types = {}
         self.filepath_label_old_text = ""
+        self.errors = []
 
         self.get_new_scan()
 
@@ -148,6 +156,17 @@ class ScanView(QMainWindow):
         self.set_img(self.img)
         self.selected_img = 'img'
 
+    def check_data(self, data):
+        errors = []
+        keys_to_check = ['team_number', 'match', 'pos']
+        for key in keys_to_check:
+            if not data[key]:
+                errors.append(key)
+        if self.tba:
+            if data['team_number'] not in self.teams:
+                errors.append('wrong_team')
+        return errors
+
     def submit_scan(self):
         if self.img is None:
             return
@@ -171,7 +190,9 @@ class ScanView(QMainWindow):
             edited_data[key] = eval('{0}("{1}")'.format(data_type_name, value), {"__builtins__": {data_type_name: data_type}})
             edited_data["filename"] = self.filename
 
-        if not edited_data['team_number']:
+        data_errors = self.check_data(edited_data)
+        if not data_errors:
+            self.errors = data_errors
             self.enable_inputs()
             return
         try:
@@ -198,7 +219,7 @@ class ScanView(QMainWindow):
                 print(ex)
         Runner(target=post_func).run()
 
-        shutil.move(self.scan_dir + self.filename, self.scan_dir + "Processed/" + self.filename)
+        shutil.move(self.scan_dir.strip('\\') + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
         self.get_new_scan()
         self.enable_inputs()
