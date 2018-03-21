@@ -207,6 +207,7 @@ class Scanner(ScannerBase):
     def _crop_scan_area(self, img):
         img2 = img[:]
         img2 = self._round_colours(img2)
+        img_height, img_width, img_channels = img2.shape
 
         hue_target = list(cv2.cvtColor(np.array([[self._marker_colour]]).astype(np.uint8), cv2.COLOR_RGB2HSV)[0, 0])
         if hue_target[0] < 10 or hue_target[0] > 170:
@@ -227,16 +228,50 @@ class Scanner(ScannerBase):
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]  # grab the 4 biggest contours.
         cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
 
-        x_coords = []
-        y_coords = []
+        upper_left_box = []
+        upper_right_box = []
+        lower_left_box = []
+        lower_right_box = []
 
         for cnt in contours:
             for e in cnt:
                 for d in e:
-                    x_coords.append(d[0])
-                    y_coords.append(d[1])
+                    if d[0] < (img_width / 2) and d[1] < (img_height / 2):
+                        upper_left_box.append([d[0], d[1]])
+                    if d[0] > (img_width / 2) and d[1] < (img_height / 2):
+                        upper_right_box.append([img_width - d[0], d[1]])
+                    if d[0] < (img_width / 2) and d[1] > (img_height / 2):
+                        lower_left_box.append([d[0], img_height - d[1]])
+                    if d[0] > (img_width / 2) and d[1] > (img_height / 2):
+                        lower_right_box.append([d[0], d[1]])
 
-        upper_left_corner = (min(x_coords), min(y_coords))
-        lower_right_corner = (int(max(x_coords)), max(y_coords))
-        cropped_img = img[upper_left_corner[1]:lower_right_corner[1], upper_left_corner[0]:lower_right_corner[0]]
+        if not all([upper_left_box, upper_right_box, lower_left_box, lower_right_box]):
+            print(Exception("Not enough corners!", upper_left_box, upper_right_box, lower_left_box, lower_right_box))
+            return img
+
+        selected_points = []
+        upper_left_point = sorted(upper_left_box, key=lambda pt: sum(pt))[0]
+        selected_points.append(upper_left_point)
+
+        upper_right_point = sorted(upper_right_box, key=lambda pt: sum(pt))[0]
+        upper_right_point = [img_width - upper_right_point[0], upper_right_point[1]]
+        selected_points.append(upper_right_point)
+
+        lower_left_point = sorted(lower_left_box, key=lambda pt: sum(pt))[0]
+        lower_left_point = [lower_left_point[0], img_height - lower_left_point[1]]
+        selected_points.append(lower_left_point)
+
+        lower_right_point = sorted(lower_right_box, key=lambda pt: sum(pt), reverse=True)[0]
+        selected_points.append(lower_right_point)
+
+        if len(selected_points) != 4:
+            print(Exception("Wrong number of corner points!", selected_points))
+            return img
+
+        new_points = ((0, 0), (img_width, 0), (0, img_height), (img_width, img_height))
+        new_points = sorted(new_points, key=lambda e: sum(e))
+        selected_points = sorted(selected_points, key=lambda e: sum(e))
+        warp_matrix = cv2.getPerspectiveTransform(np.float32(selected_points), np.float32(new_points))
+        cropped_img = cv2.warpPerspective(img[:], warp_matrix, (img_width, img_height),
+                                          borderMode=cv2.BORDER_CONSTANT, borderValue=(255, 255, 255))
         return cropped_img
