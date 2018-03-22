@@ -25,9 +25,11 @@ class ScanView(QMainWindow):
         try:
             self.tba = TBA('GdZrQUIjmwMZ3XVS622b6aVCh8CLbowJkCs5BmjJl2vxNuWivLz3Sf3PaqULUiZW')
             self.teams = self.tba.get_event_teams_keys(event_id)  # TODO: Verify this, I want [1503, 5406, 1114...]
+            self.matches = self.tba.get_event_matches_simple(event_id)
         except:
             self.tba = None
             self.teams = None
+            self.matches = None
 
         self.data_preview.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
         self.data_preview.horizontalHeader().setSectionResizeMode(1, QHeaderView.Interactive)
@@ -160,11 +162,18 @@ class ScanView(QMainWindow):
         errors = []
         keys_to_check = ['team_number', 'match', 'pos']
         for key in keys_to_check:
-            if not data[key]:
-                errors.append(key)
-        if self.tba:
-            if data['team_number'] not in self.teams:
-                errors.append('wrong_team')
+            if not (data[key] or data[key] in [False, 0]):
+                errors.append('missing_' + key)
+        if self.teams:
+            if "frc{}".format(data['team_number']) not in self.teams:
+                errors.append('team_not_at_event')
+        if self.matches:
+            if data['match'] not in [e['match_number'] for e in self.matches]:
+                errors.append('match_number_not_at_event')
+            alliance = 'red' if data['pos'] <= 2 else 'blue'
+            expected_team = [e for e in self.matches if e['match_number'] == data['match'] and e['comp_level'] == 'qm'][0]['alliances'][alliance]['team_keys'][data['pos'] % 3]
+            if "frc{}".format(data['team_number']) != expected_team:
+                errors.append('expected_different_team: {}'.format(expected_team))
         return errors
 
     def submit_scan(self):
@@ -191,8 +200,9 @@ class ScanView(QMainWindow):
             edited_data["filename"] = self.filename
 
         data_errors = self.check_data(edited_data)
-        if not data_errors:
+        if data_errors:
             self.errors = data_errors
+            self.set_filepath_label_text(json.dumps(self.errors))
             self.enable_inputs()
             return
         try:
