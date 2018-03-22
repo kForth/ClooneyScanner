@@ -9,3 +9,5 @@ data/
 *.psd
 __pycache__/
 data.json
+
+tba_cache.json
