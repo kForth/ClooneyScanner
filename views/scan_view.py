@@ -2,6 +2,7 @@ import glob
 import json
 import shutil
 import os
+import time
 
 import cv2
 import numpy as np
@@ -11,6 +12,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import requests
 
+from generator import SpreadsheetGenerator
 from runners import Runner
 from scanners.scanner import Scanner
 from tba_py import TBA
@@ -19,12 +21,12 @@ from tba_py import TBA
 class ScanView(QMainWindow):
 
     def __init__(self, event_id, data_file, config_file, fields_file, scan_dirpath, clooney_host):
-        super().__init__()
+        QMainWindow.__init__(self)
         uic.loadUi('ui/ScanView.ui', self)
 
         try:
             self.tba = TBA('GdZrQUIjmwMZ3XVS622b6aVCh8CLbowJkCs5BmjJl2vxNuWivLz3Sf3PaqULUiZW')
-            self.teams = self.tba.get_event_teams_keys(event_id)  # TODO: Verify this, I want [1503, 5406, 1114...]
+            self.teams = self.tba.get_event_teams_keys(event_id)
             self.matches = self.tba.get_event_matches_simple(event_id)
         except:
             self.tba = None
@@ -71,6 +73,12 @@ class ScanView(QMainWindow):
 
         self.scanner = Scanner(self.field_list, self.config, self.scan_dir + "images/")
 
+        self.generator = SpreadsheetGenerator('db.sqlite', self.tba)
+        self.generator_runner = Runner('Generator', self.update_spreadsheet)
+        self.last_updated = time.time()
+        self.should_update_again = False
+        self.generator_runner.run(run_anyway=True)
+
         self.backup_img = np.zeros((1, 1, 3), np.uint8)
         self.img = np.zeros((1, 1, 3), np.uint8)
         self.raw_img = np.zeros((1, 1, 3), np.uint8)
@@ -84,6 +92,24 @@ class ScanView(QMainWindow):
         self.get_new_scan()
 
         self.show()
+
+    def update_spreadsheet(self, delay=30, run_anyway=False):
+        time_delta = time.time() - self.last_updated
+        if time_delta > 60 or run_anyway:
+            last_update = self.last_updated
+            self.last_updated = time.time()
+            self.generator.create_spreadsheet_for_event(self.event_id)
+            try:
+                self.generator.upload_to_google_drive('Clooney.xlsx', 'Clooney {}'.format(self.event_id))
+            except:
+                print("Couldn't Upload Spreadsheet")
+            print("Updated Spreadsheet @ {}".format(self.last_updated))
+            time.sleep(max(0, delay - (time.time() - last_update)))
+            if self.should_update_again:
+                self.should_update_again = False
+                self.update_spreadsheet(run_anyway=True)
+        else:
+            self.should_update_again = True
 
     def enable_inputs(self, enabled=('submit', 'reject', 'go_back', 'refresh', 'four', 'rotate', 'toggle', 'data')):
         self.submit_button.setEnabled('submit' in enabled)
@@ -228,6 +254,7 @@ class ScanView(QMainWindow):
             except Exception as ex:
                 print(ex)
         Runner(target=post_func).run()
+        self.generator_runner.run()
 
         shutil.move(self.scan_dir.strip('\\') + self.filename, self.scan_dir + "Processed/" + self.filename)
         cv2.imwrite(self.scan_dir + "Marked/" + self.filename, self.img)
@@ -238,6 +265,7 @@ class ScanView(QMainWindow):
         if self.img is None:
             return
         shutil.move(self.scan_dir + self.filename, self.scan_dir + "Rejected/" + self.filename)
+        self.generator_runner.run()
         self.get_new_scan()
 
     def set_img(self, cv_img):
